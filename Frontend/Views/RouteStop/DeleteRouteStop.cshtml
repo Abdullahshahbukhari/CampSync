@@ -1,0 +1,624 @@
+﻿@model Frontend.DTOs.RouteStopResponseModel
+
+@{
+    ViewData["Title"] = "Delete Route Stop";
+    var currentRole = Context.Session.GetString("role") ?? "";
+    var canDelete = currentRole == "Admin";
+}
+
+<div class="container-fluid py-4">
+
+    @if (!canDelete)
+    {
+        <div class="alert alert-danger shadow-sm border-0">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            Only Admin can delete route stops.
+        </div>
+        <a asp-action="RouteStopList" asp-route-busId="@Model.BusId" class="btn btn-route-outline">
+            <i class="bi bi-arrow-left"></i> Back to Route Stops
+        </a>
+        return;
+    }
+
+
+    <div class="route-header mb-4">
+
+        <div>
+
+            <span class="section-badge danger-badge">
+                ROUTE MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Delete Route Stop
+            </h1>
+
+            <p class="text-muted mb-0">
+                Review the route stop before permanently deleting it.
+            </p>
+
+        </div>
+
+        <a asp-action="RouteStopList"
+           asp-route-busId="@Model.BusId"
+           class="btn btn-route-outline mt-3 mt-md-0">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Route Stops
+
+        </a>
+
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    <div class="card delete-main-card border-0">
+
+        <div class="card-body p-0">
+
+
+            <div class="delete-top p-4">
+
+                <div class="delete-icon">
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Are you sure?
+                    </h4>
+
+                    <p class="mb-0 text-muted">
+                        This action cannot be undone.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="p-4">
+
+                <div class="route-detail-box">
+
+
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Route Stop
+                            </span>
+
+                            <strong>
+                                @Model.StopName
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+
+                            <i class="bi bi-bus-front-fill"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Assigned Bus
+                            </span>
+
+                            <strong>
+                                Bus @Model.BusNo
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+
+                            <i class="bi bi-list-ol"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Sequence Order
+                            </span>
+
+                            <strong>
+                                @Model.SeqOrder
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+
+                            <i class="bi bi-hash"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Stop ID
+                            </span>
+
+                            <strong>
+                                #@Model.Id
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="delete-warning mt-4">
+
+                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                    <div>
+
+                        <strong>
+                            Permanent Action
+                        </strong>
+
+                        <p class="mb-0">
+                            Once deleted, this route stop cannot be recovered.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+   
+
+                <form asp-action="DeleteRouteStop"
+                      asp-route-id="@Model.Id"
+                      asp-route-busId="@Model.BusId"
+                      method="post"
+                      class="form-actions mt-5 pt-4">
+
+                    @Html.AntiForgeryToken()
+
+                    <a asp-action="RouteStopList"
+                       asp-route-busId="@Model.BusId"
+                       class="btn btn-route-cancel">
+
+                        <i class="bi bi-x-lg"></i>
+
+                        Cancel
+
+                    </a>
+
+
+                    <button type="submit"
+                            class="btn btn-delete-route">
+
+                        <i class="bi bi-trash-fill"></i>
+
+                        Delete Route Stop
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+
+    body {
+        background: #fff7f1;
+    }
+
+
+    .route-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+
+    .danger-badge {
+        color: #dc3545;
+    }
+
+
+    .route-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .btn-route-outline {
+        background: white;
+        color: #ff6b1a;
+        border: 1px solid #ffd5bd;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+
+        .btn-route-outline:hover {
+            background: #fff0e7;
+            color: #ff6b1a;
+            transform: translateY(-2px);
+        }
+
+
+    .delete-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+
+
+    .delete-top {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        background: #fff5f5;
+        border-bottom: 1px solid #ffe2e2;
+    }
+
+
+    .delete-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffebeb;
+        color: #dc3545;
+        border-radius: 18px;
+        font-size: 26px;
+    }
+
+
+    .route-detail-box {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px;
+        background: #fffaf7;
+        border-radius: 16px;
+        border: 1px solid #fff1e8;
+    }
+
+
+    .detail-icon {
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 14px;
+        font-size: 19px;
+    }
+
+
+    .detail-item span {
+        display: block;
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 3px;
+    }
+
+
+    .detail-item strong {
+        display: block;
+        color: #333;
+        font-size: 15px;
+    }
+
+    .delete-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 18px;
+        background: #fff5f5;
+        border: 1px solid #ffe2e2;
+        border-radius: 16px;
+        color: #842029;
+    }
+
+
+        .delete-warning i {
+            font-size: 22px;
+            color: #dc3545;
+        }
+
+
+        .delete-warning strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        border-top: 1px solid #f1f1f1;
+    }
+
+
+    .btn-route-cancel {
+        background: #f4f5f6;
+        color: #555;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        transition: .25s;
+    }
+
+
+        .btn-route-cancel:hover {
+            background: #e9ecef;
+            color: #333;
+            transform: translateY(-2px);
+        }
+
+
+    .btn-delete-route {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(220,53,69,.20);
+        transition: .3s;
+    }
+
+
+        .btn-delete-route:hover {
+            background: #bb2d3b;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(220,53,69,.30);
+        }
+
+
+    @@media (max-width: 768px) {
+
+        .route-header {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 24px;
+        }
+
+
+        .route-detail-box {
+            grid-template-columns: 1fr;
+        }
+
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+
+            .form-actions a,
+            .form-actions button {
+                width: 100%;
+            }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+  
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

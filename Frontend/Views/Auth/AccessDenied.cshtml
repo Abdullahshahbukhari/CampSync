@@ -1,0 +1,206 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Access Denied - CampSync</title>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row min-vh-100 align-items-center justify-content-center">
+
+            <div class="col-md-6 text-center">
+
+                <div class="card shadow-lg border-0 p-5">
+
+                    <div class="mb-4">
+                        <div style="
+                            font-size: 70px;
+                            color: #ff6b1a;">
+                            🔒
+                        </div>
+                    </div>
+
+                    <h1 class="fw-bold">
+                        Access Denied
+                    </h1>
+
+                    <p class="text-muted mt-3">
+                        You don't have permission to access this page.
+                    </p>
+
+                    <a asp-controller="Camp"
+                       asp-action="CampList"
+                       class="btn btn-primary mt-3">
+                        Go Back
+                    </a>
+
+                    <a asp-controller="Auth"
+                       asp-action="Logout"
+                       class="btn btn-outline-danger mt-3 ms-2">
+                        Logout
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
+
+<style>
+  
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+   
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+  
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+</style>
+

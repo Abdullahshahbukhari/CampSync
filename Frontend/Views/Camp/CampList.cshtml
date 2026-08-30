@@ -1,0 +1,1017 @@
+﻿@model List<Frontend.DTOs.CampResponseModel>
+
+@{
+    ViewData["Title"] = "Camp Management";
+}
+
+<div class="container-fluid py-4">
+
+
+    <div class="camp-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                CAMP MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Manage Your Camps
+            </h1>
+
+            <p class="text-muted mb-0">
+                View, manage and organize all camps from one place.
+            </p>
+
+        </div>
+
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="CreateCamp"
+               class="btn btn-camp-primary mt-3 mt-md-0">
+
+                <i class="bi bi-plus-lg"></i>
+
+                Create Camp
+
+            </a>
+        }
+
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="camp-success-alert" role="alert">
+            <div class="camp-success-icon"><i class="bi bi-check-lg"></i></div>
+            <div class="camp-success-content">
+                <strong>Camp created successfully</strong>
+                <span>@TempData["Success"]</span>
+            </div>
+            <button type="button" class="camp-success-close" data-bs-dismiss="alert" aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    <div class="row g-4 mb-4">
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-buildings-fill"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="stat-label">
+                        Total Camps
+                    </span>
+
+                    <h2>
+                        @(Model?.Count ?? 0)
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="stat-label">
+                        Locations
+                    </span>
+
+                    <h2>
+                        @(Model?.Select(x => x.Location).Distinct().Count() ?? 0)
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-activity"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="stat-label">
+                        System Status
+                    </span>
+
+                    <h5 class="mb-0 text-success fw-bold">
+                        Active
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card camp-main-card border-0">
+
+        <div class="card-body p-0">
+
+
+            <div class="camp-list-top p-4">
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Camp Directory
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        All registered camps in your system.
+                    </p>
+
+                </div>
+
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <div class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="text"
+                               id="campSearch"
+                               class="form-control"
+                               placeholder="Search camp or location..." />
+
+                    </div>
+
+                    <select id="campDropdown"
+                            class="form-select camp-dropdown">
+
+                        <option value="">All Camps</option>
+
+                        @if (Model != null)
+                        {
+                            foreach (var camp in Model)
+                            {
+                                <option value="@camp.Id">
+                                    @camp.Name
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0 camp-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Camp
+                            </th>
+
+                            <th>
+                                Location
+                            </th>
+
+                            <th class="text-center">
+                                Camp ID
+                            </th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="campTableBody">
+
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var camp in Model)
+                            {
+                                <tr>
+
+
+                                    <td>
+
+                                        <div class="d-flex align-items-center gap-3">
+
+                                            <div class="camp-avatar">
+
+                                                <i class="bi bi-house-heart-fill"></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <h6 class="mb-1 fw-bold">
+
+                                                    @camp.Name
+
+                                                </h6>
+
+
+                                                <small class="text-muted">
+
+                                                    Camp Management
+
+                                                </small>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="location-text">
+
+                                            <i class="bi bi-geo-alt-fill"></i>
+
+                                            @camp.Location
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td class="text-center">
+
+                                        <span class="id-badge">
+
+                                            #@camp.Id
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+
+                                        <div class="d-flex justify-content-end align-items-center gap-2 action-buttons">
+
+
+                                            <a asp-action="Campbyid"
+                                               asp-route-id="@camp.Id"
+                                               class="action-btn details-btn">
+
+                                                <i class="bi bi-eye-fill"></i>
+
+                                                <span>
+                                                    Details
+                                                </span>
+
+                                            </a>
+
+                                            {
+                                                <a asp-action="EditCamp"
+                                                   asp-route-id="@camp.Id"
+                                                   class="action-btn edit-btn">
+
+                                                    <i class="bi bi-pencil-square"></i>
+
+                                                    <span>
+                                                        Edit
+                                                    </span>
+
+                                                </a>
+                                            }
+
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a asp-action="Delete"
+                                                   asp-route-id="@camp.Id"
+                                                   class="action-btn delete-btn">
+
+                                                    <i class="bi bi-trash-fill"></i>
+
+                                                    <span>
+                                                        Delete
+                                                    </span>
+
+                                                </a>
+                                            }
+
+
+                                        </div>
+
+
+                                    </td>
+
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="4"
+                                    class="text-center py-5 text-muted">
+
+                                    <i class="bi bi-info-circle me-2"></i>
+
+                                    No camps available.
+
+                                </td>
+
+                            </tr>
+                        }
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+
+    body {
+        background: #fff7f1;
+    }
+
+
+    .camp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient( 135deg, #ffffff, #fff4ec );
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .camp-dropdown {
+        width: 220px;
+        min-height: 45px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        cursor: pointer;
+    }
+
+        .camp-dropdown:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+
+    .camp-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .btn-camp-primary {
+        background: linear-gradient( 135deg, #ff6b1a, #ff944d );
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+        transition: .3s;
+    }
+
+
+        .btn-camp-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255,107,26,.35);
+        }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+        height: 100%;
+    }
+
+
+    .stat-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 25px;
+    }
+
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+
+    .stat-card h2 {
+        margin: 3px 0 0;
+        font-weight: 700;
+    }
+
+    .camp-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+    .camp-list-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .search-box {
+        position: relative;
+        width: 320px;
+    }
+
+
+        .search-box i {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            color: #999;
+            z-index: 2;
+        }
+
+
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            min-height: 45px;
+        }
+
+
+            .search-box input:focus {
+                border-color: #ff9a5a;
+                box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+            }
+
+
+    .camp-table thead {
+        background: #fff8f4;
+    }
+
+
+    .camp-table th {
+        padding: 18px;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        border: none;
+    }
+
+
+    .camp-table td {
+        padding: 18px;
+        border-color: #f1f1f1;
+    }
+
+
+    .camp-table tbody tr {
+        transition: .25s;
+    }
+
+
+        .camp-table tbody tr:hover {
+            background: #fffaf7;
+        }
+
+    .camp-avatar {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        background: linear-gradient( 135deg, #ff6b1a, #ff9a5a );
+        border-radius: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 22px;
+        box-shadow: 0 8px 18px rgba(255,107,26,.25);
+    }
+
+    .location-text {
+        color: #555;
+        font-weight: 500;
+    }
+
+
+        .location-text i {
+            color: #ff6b1a;
+            margin-right: 5px;
+        }
+
+    .id-badge {
+        background: #f4f5f6;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all .25s ease;
+        white-space: nowrap;
+    }
+
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+
+   
+
+    .details-btn {
+        background: #eaf4ff;
+        color: #0d6efd;
+    }
+
+
+        .details-btn:hover {
+            background: #0d6efd;
+            color: white;
+            box-shadow: 0 8px 18px rgba(13,110,253,.20);
+        }
+
+
+    .edit-btn {
+        background: #fff2df;
+        color: #e98a00;
+    }
+
+
+        .edit-btn:hover {
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 8px 18px rgba(245,158,11,.20);
+        }
+
+
+    .delete-btn {
+        background: #ffebeb;
+        color: #dc3545;
+    }
+
+
+        .delete-btn:hover {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 8px 18px rgba(220,53,69,.20);
+        }
+
+
+
+    .empty-state {
+        padding: 30px;
+    }
+
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 32px;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto auto 20px;
+    }
+
+    @@media (max-width: 992px) {
+
+        .action-buttons {
+            justify-content: flex-start !important;
+        }
+    }
+
+
+    @@media (max-width: 768px) {
+
+        .camp-header,
+        .camp-list-top {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+
+        .search-box {
+            width: 100%;
+        }
+
+
+        .camp-header {
+            padding: 24px;
+        }
+
+
+        .action-btn {
+            padding: 8px 12px;
+        }
+    }
+
+
+    @@media (max-width: 576px) {
+
+        .camp-header h1 {
+            font-size: 28px;
+        }
+
+
+        .stat-card {
+            padding: 18px;
+        }
+
+
+        .camp-list-top {
+            padding: 20px !important;
+        }
+    }
+
+
+    .camp-success-alert {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+        padding: 14px 16px;
+        background: #f0fbf6;
+        border: 1px solid #ccefe0;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(25,100,70,.06);
+    }
+
+    .camp-success-icon {
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+        border-radius: 12px;
+        background: #d9f5e8;
+        color: #198754;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+
+    .camp-success-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+    }
+
+        .camp-success-content strong {
+            color: #176b4a;
+            font-size: 14px;
+        }
+
+        .camp-success-content span {
+            color: #5f746a;
+            font-size: 13px;
+        }
+
+    .camp-success-close {
+        border: 0;
+        background: transparent;
+        color: #6c8a7d;
+        padding: 7px;
+        border-radius: 9px;
+    }
+
+        .camp-success-close:hover {
+            background: #dff5e9;
+            color: #176b4a;
+        }
+
+
+
+  
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+@section Scripts {
+
+    <script>
+
+        const searchInput =
+            document.getElementById("campSearch");
+
+        const campDropdown =
+            document.getElementById("campDropdown");
+
+        const rows =
+            document.querySelectorAll("#campTableBody tr");
+
+
+        function filterCamps() {
+
+            const searchValue =
+                searchInput.value.toLowerCase().trim();
+
+            const selectedCamp =
+                campDropdown.value;
+
+
+            rows.forEach(function(row) {
+
+                const rowText =
+                    row.innerText.toLowerCase();
+
+                const campIdElement =
+                    row.querySelector(".id-badge");
+
+                let campId = "";
+
+                if (campIdElement) {
+
+                    campId =
+                        campIdElement.innerText
+                            .replace("#", "")
+                            .trim();
+
+                }
+
+
+                const searchMatch =
+                    rowText.includes(searchValue);
+
+                const dropdownMatch =
+                    selectedCamp === "" ||
+                    campId === selectedCamp;
+
+
+                row.style.display =
+                    searchMatch && dropdownMatch
+                        ? ""
+                        : "none";
+
+            });
+
+        }
+
+
+        searchInput.addEventListener(
+            "input",
+            filterCamps
+        );
+
+
+        campDropdown.addEventListener(
+            "change",
+            filterCamps
+        );
+    </script>
+
+}

@@ -1,0 +1,526 @@
+﻿@model Frontend.DTOs.WorkerResponseModel
+
+@{
+    ViewData["Title"] = "Delete Worker";
+    var role = Context.Session.GetString("role");
+}
+
+<div class="container py-4">
+
+
+    <div class="page-header mb-4">
+
+        <div>
+
+            <span class="section-badge delete-badge">
+                DELETE WORKER
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Remove Worker
+            </h1>
+
+            <p class="text-muted mb-0">
+                Review the worker information before deletion.
+            </p>
+
+        </div>
+
+        <a asp-action="WorkerById"
+           asp-route-id="@Model.Id"
+           class="btn btn-back">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+    @if (role != "Admin")
+    {
+        <div class="alert alert-danger shadow-sm border-0">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            You are not authorized to delete workers.
+        </div>
+
+        <a asp-action="WorkerById"
+           asp-route-id="@Model.Id"
+           class="btn btn-back">
+
+            <i class="bi bi-arrow-left"></i>
+            Back to Worker
+
+        </a>
+    }
+    else
+    {
+
+        <div class="delete-card">
+
+            <!-- WARNING ICON -->
+
+            <div class="warning-icon">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+            </div>
+
+
+            <span class="section-badge delete-badge">
+                WARNING
+            </span>
+
+
+            <h2 class="mt-2">
+                Are you sure?
+            </h2>
+
+
+            <p class="text-muted delete-description">
+
+                You are about to permanently delete this worker.
+                This action cannot be undone.
+
+            </p>
+
+
+            <!-- WORKER INFO -->
+
+            <div class="worker-info-box">
+
+                <div class="worker-avatar">
+
+                    <i class="bi bi-person-fill"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h4 class="mb-1">
+
+                        @Model.Name
+
+                    </h4>
+
+                    <p class="mb-0 text-muted">
+
+                        Iqama No: @Model.IqamaNo
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- DETAILS -->
+
+            <div class="row g-3 mt-2">
+
+                <div class="col-md-4">
+
+                    <div class="delete-detail">
+
+                        <i class="bi bi-building"></i>
+
+                        <div>
+
+                            <small>Camp</small>
+
+                            <strong>
+                                @Model.CampName
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="delete-detail">
+
+                        <i class="bi bi-bus-front-fill"></i>
+
+                        <div>
+
+                            <small>Bus</small>
+
+                            <strong>
+                                Bus @Model.BusNo
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="delete-detail">
+
+                        <i class="bi bi-door-closed-fill"></i>
+
+                        <div>
+
+                            <small>Bed</small>
+
+                            <strong>
+                                Bed @Model.BedNo
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRM FORM -->
+
+            <form asp-action="Delete"
+                  asp-route-id="@Model.Id"
+                  method="post"
+                  class="delete-actions">
+
+                @Html.AntiForgeryToken()
+
+
+                <button type="submit"
+                        class="btn btn-danger-custom">
+
+                    <i class="bi bi-trash-fill"></i>
+
+                    Yes, Delete Worker
+
+                </button>
+
+
+                <a asp-action="WorkerById"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-cancel">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+    }
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .delete-badge {
+        color: #dc3545;
+    }
+
+    .page-header h1 {
+        font-weight: 700;
+    }
+
+    .btn-back,
+    .btn-cancel {
+        background: white;
+        border: 1px solid #eee;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+    .delete-card {
+        background: white;
+        padding: 45px;
+        border-radius: 24px;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+        text-align: center;
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .warning-icon {
+        width: 90px;
+        height: 90px;
+        margin: auto auto 20px;
+        border-radius: 28px;
+        background: #ffebeb;
+        color: #dc3545;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+    }
+
+    .delete-description {
+        max-width: 500px;
+        margin: auto;
+    }
+
+    .worker-info-box {
+        margin: 35px 0 20px;
+        padding: 22px;
+        border-radius: 18px;
+        background: #fffaf7;
+        border: 1px solid #fff0e7;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 18px;
+    }
+
+    .worker-avatar {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #ff6b1a, #ff9a5a);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .delete-detail {
+        background: #fffaf7;
+        border: 1px solid #fff0e7;
+        border-radius: 15px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+        height: 100%;
+    }
+
+        .delete-detail i {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: #fff0e7;
+            color: #ff6b1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-detail small,
+        .delete-detail strong {
+            display: block;
+        }
+
+        .delete-detail small {
+            color: #888;
+            margin-bottom: 3px;
+        }
+
+    .delete-actions {
+        margin-top: 35px;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .btn-danger-custom {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(220,53,69,.20);
+    }
+
+        .btn-danger-custom:hover {
+            background: #bb2d3b;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 768px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 20px;
+        }
+
+        .delete-card {
+            padding: 28px 20px;
+        }
+
+        .delete-actions {
+            flex-direction: column;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+   
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

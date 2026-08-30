@@ -1,0 +1,251 @@
+﻿@model Frontend.DTOs.LeaveSummaryModel
+@{
+    ViewData["Title"] = "Leave Summary"; var role = Context.Session.GetString("role") ?? ""; var isManagement = role == "Admin" || role == "Supervisor";
+}
+<div class="container-fluid py-4 leave-page">
+    <div class="leave-header mb-4"><div><span class="section-badge">LEAVE SUMMARY</span><h1 class="mt-2 mb-1">Leave Summary</h1><p class="text-muted mb-0">@Model.UserName's leave totals by status.</p></div><a asp-action="LeaveHub" class="btn btn-outline-secondary">Back</a></div>
+    @if (isManagement)
+    {
+        <div class="search-card mb-4"><form asp-action="Summary" method="get" class="row g-2 align-items-end"><div class="col-md-4"><label class="form-label fw-semibold">Worker ID</label><input type="number" min="1" name="workerId" class="form-control" placeholder="Enter Worker ID" /></div><div class="col-md-auto"><button class="btn btn-leave-primary" type="submit">Load Worker Summary</button></div></form></div>
+    }
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="summary-card">
+                <span>User</span><strong>@Model.UserName</strong><small>
+                Role: @Model.Role @if(Model.WorkerId.HasValue){
+                <text>· Worker #@Model.WorkerId</text>
+            }
+        </small>
+    </div>
+</div><div class="col-md-4"><div class="summary-card approved-card"><span>Approved</span><strong>@(Model.Summary.FirstOrDefault(x => x.Status == "Approved")?.TotalLeaves ?? 0)</strong><small>Approved requests</small></div></div><div class="col-md-4"><div class="summary-card pending-card"><span>Pending</span><strong>@(Model.Summary.FirstOrDefault(x => x.Status == "Pending")?.TotalLeaves ?? 0)</strong><small>Waiting for decision</small></div></div><div class="col-md-4"><div class="summary-card rejected-card"><span>Rejected</span><strong>@(Model.Summary.FirstOrDefault(x => x.Status == "Rejected")?.TotalLeaves ?? 0)</strong><small>Rejected requests</small></div></div><div class="col-md-8"><div class="summary-card"><span>All Recorded Requests</span><strong>@Model.Summary.Sum(x => x.TotalLeaves)</strong><small>Total leave requests for this account</small></div></div>
+</div>
+</div>
+<style>
+    .leave-page {
+        max-width: 1500px;
+        margin: auto
+    }
+
+    .leave-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 30px;
+        border-radius: 24px;
+        background: linear-gradient(135deg,#fff,#fff4ec);
+        box-shadow: 0 12px 40px rgba(0,0,0,.05)
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px
+    }
+
+    .leave-header h1 {
+        font-weight: 750
+    }
+
+    .search-card {
+        padding: 22px;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05)
+    }
+
+    .btn-leave-primary {
+        background: #ff6b1a;
+        color: #fff;
+        border: 0;
+        border-radius: 11px;
+        font-weight: 700
+    }
+
+    .summary-card {
+        height: 100%;
+        padding: 26px;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+        border: 1px solid #f0f0f0
+    }
+
+        .summary-card span {
+            display: block;
+            color: #777;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .6px
+        }
+
+        .summary-card strong {
+            display: block;
+            margin: 7px 0;
+            font-size: 32px;
+            font-weight: 800
+        }
+
+        .summary-card small {
+            color: #888
+        }
+
+    .approved-card strong {
+        color: #198754
+    }
+
+    .pending-card strong {
+        color: #c77700
+    }
+
+    .rejected-card strong {
+        color: #dc3545
+    }
+
+    @@media(max-width:768px) {
+        .leave-header {
+            flex-direction: column;
+            align-items: flex-start
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

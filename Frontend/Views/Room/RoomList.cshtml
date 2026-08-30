@@ -1,0 +1,798 @@
+﻿@using Frontend.DTOs
+@model List<RoomResponseModel>
+
+@{
+    ViewData["Title"] = "Room Management";
+    var userRole = Context.Session.GetString("role");
+    var isAdmin = userRole == "Admin";
+
+    var camps = ViewBag.Camps as List<CampResponseModel>
+                ?? new List<CampResponseModel>();
+
+    int? selectedCampId = ViewBag.SelectedCampId as int?;
+}
+
+<div class="container-fluid py-4">
+
+
+    <div class="room-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                ROOM MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Manage Your Rooms
+            </h1>
+
+            <p class="text-muted mb-0">
+                Select a camp to view and manage its rooms.
+            </p>
+
+        </div>
+
+        @if (isAdmin)
+        {
+            <a asp-action="CreateRoom"
+               class="btn btn-room-primary">
+
+                <i class="bi bi-plus-lg me-2"></i>
+
+                Create Room
+
+            </a>
+        }
+
+    </div>
+
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            @ViewBag.Error
+
+        </div>
+    }
+
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-door-open-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Total Rooms
+                    </span>
+
+                    <h2>
+                        @(Model?.Count ?? 0)
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-buildings-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Selected Camp
+                    </span>
+
+                    <h5 class="mb-0 fw-bold">
+
+                        @if (selectedCampId.HasValue)
+                        {
+                            <span>
+                                Camp #@selectedCampId
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">
+                                Not Selected
+                            </span>
+                        }
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-check2-circle"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Status
+                    </span>
+
+                    <h5 class="mb-0 text-success fw-bold">
+                        Active
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card room-main-card border-0">
+
+        <div class="card-body p-0">
+
+
+            <div class="room-list-top p-4">
+
+                <div>
+
+                    <h4 class="fw-bold mb-1">
+                        Room Directory
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Choose a camp to see its registered rooms.
+                    </p>
+
+                </div>
+
+
+                <form asp-action="RoomList"
+                      method="get"
+                      class="camp-filter">
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+
+                            <i class="bi bi-buildings-fill"></i>
+
+                        </span>
+
+                        <select name="campId"
+                                class="form-select"
+                                onchange="this.form.submit()">
+
+                            <option value="">
+                                -- Select Camp --
+                            </option>
+
+                            @foreach (var camp in camps)
+                            {
+                                @if (selectedCampId == camp.Id)
+                                {
+                                    <option value="@camp.Id"
+                                            selected>
+                                        @camp.Name
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@camp.Id">
+                                        @camp.Name
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0 room-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Room</th>
+
+                            <th class="text-center">
+                                Room ID
+                            </th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var room in Model)
+                            {
+                                <tr>
+
+                                    <td>
+
+                                        <div class="d-flex align-items-center gap-3">
+
+                                            <div class="room-avatar">
+
+                                                <i class="bi bi-door-open-fill"></i>
+
+                                            </div>
+
+                                            <div>
+
+                                                <h6 class="fw-bold mb-1">
+
+                                                    Room @room.RoomNo
+
+                                                </h6>
+
+                                                <small class="text-muted">
+
+                                                    Camp ID: @room.CampId
+
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td class="text-center">
+
+                                        <span class="id-badge">
+
+                                            #@room.Id
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="d-flex justify-content-end gap-2 action-buttons">
+
+                                            <a asp-action="Roombyid"
+                                               asp-route-id="@room.Id"
+                                               class="action-btn details-btn">
+
+                                                <i class="bi bi-eye-fill"></i>
+
+                                                <span>
+                                                    Details
+                                                </span>
+
+                                            </a>
+
+
+                                            @if (isAdmin)
+                                            {
+                                                <a asp-action="EditRoom"
+                                                   asp-route-id="@room.Id"
+                                                   class="action-btn edit-btn">
+
+                                                    <i class="bi bi-pencil-square"></i>
+
+                                                    <span>Edit</span>
+
+                                                </a>
+
+                                                <a asp-action="Delete"
+                                                   asp-route-id="@room.Id"
+                                                   class="action-btn delete-btn">
+
+                                                    <i class="bi bi-trash-fill"></i>
+
+                                                    <span>Delete</span>
+
+                                                </a>
+                                            }
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else if (selectedCampId.HasValue)
+                        {
+                            <tr>
+
+                                <td colspan="3"
+                                    class="text-center py-5">
+
+                                    <div class="empty-room-icon">
+
+                                        <i class="bi bi-door-closed-fill"></i>
+
+                                    </div>
+
+                                    <h5 class="fw-bold mt-3">
+                                        No Rooms Found
+                                    </h5>
+
+                                    <p class="text-muted mb-0">
+                                        This camp does not have any rooms yet.
+                                    </p>
+
+                                </td>
+
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="3"
+                                    class="text-center py-5 text-muted">
+
+                                    <i class="bi bi-arrow-up-circle-fill me-2"></i>
+
+                                    Please select a camp to view its rooms.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .room-header h1 {
+        font-weight: 700;
+    }
+
+    .btn-room-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+    }
+
+        .btn-room-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        height: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    }
+
+    .stat-icon {
+        width: 58px;
+        height: 58px;
+        min-width: 58px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 24px;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .stat-card h2 {
+        margin: 3px 0 0;
+        font-weight: 700;
+    }
+
+    .room-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+    .room-list-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .camp-filter {
+        min-width: 300px;
+    }
+
+        .camp-filter .input-group-text {
+            background: #fff7f2;
+            color: #ff6b1a;
+            border-color: #eee;
+        }
+
+        .camp-filter .form-select {
+            border-color: #eee;
+        }
+
+    .room-table thead {
+        background: #fff8f4;
+    }
+
+    .room-table th {
+        padding: 18px;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        border: none;
+    }
+
+    .room-table td {
+        padding: 18px;
+        border-color: #f1f1f1;
+    }
+
+    .room-table tbody tr:hover {
+        background: #fffaf7;
+    }
+
+    .room-avatar {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        border-radius: 17px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #ff6b1a, #ff9a5a);
+        color: white;
+        font-size: 22px;
+        box-shadow: 0 8px 18px rgba(255,107,26,.25);
+    }
+
+    .id-badge {
+        background: #f4f5f6;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .25s;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .details-btn {
+        background: #eaf4ff;
+        color: #0d6efd;
+    }
+
+        .details-btn:hover {
+            background: #0d6efd;
+            color: white;
+        }
+
+    .edit-btn {
+        background: #fff2df;
+        color: #e98a00;
+    }
+
+        .edit-btn:hover {
+            background: #f59e0b;
+            color: white;
+        }
+
+    .delete-btn {
+        background: #ffebeb;
+        color: #dc3545;
+    }
+
+        .delete-btn:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .empty-room-icon {
+        width: 70px;
+        height: 70px;
+        margin: auto;
+        border-radius: 20px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+    }
+
+    @@media(max-width: 768px) {
+
+        .room-header,
+        .room-list-top {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .camp-filter {
+            min-width: 100%;
+        }
+
+        .action-buttons {
+            justify-content: flex-start !important;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+     
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

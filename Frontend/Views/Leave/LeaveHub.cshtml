@@ -1,0 +1,267 @@
+﻿@{
+    ViewData["Title"] = "Leave Management"; var role = Context.Session.GetString("role") ?? ""; var isManagement = role == "Admin" || role == "Supervisor"; var canUseLeave = new[] { "Admin", "Supervisor", "Worker", "Driver" }.Contains(role);
+}
+<div class="container-fluid py-4 leave-page">
+    <div class="leave-header mb-4"><div><span class="section-badge">LEAVE MANAGEMENT</span><h1 class="mt-2 mb-1">Leave Management</h1><p class="text-muted mb-0">Leave options available for your authorized role.</p></div><div class="role-pill"><i class="bi bi-person-badge"></i> @role</div></div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    <div class="row g-4">
+        @if (canUseLeave)
+        {
+            <div class="col-md-6 col-xl-4"><a asp-action="ApplyLeave" class="leave-action-card"><div class="leave-card-icon apply-icon"><i class="bi bi-calendar-plus"></i></div><span class="leave-card-label">ALL ROLES</span><h4>Apply Leave</h4><p>Submit your own leave request.</p><span class="leave-arrow">→</span></a></div>
+            <div class="col-md-6 col-xl-4"><a asp-action="MyLeaves" class="leave-action-card"><div class="leave-card-icon my-icon"><i class="bi bi-calendar-check"></i></div><span class="leave-card-label">ALL ROLES</span><h4>My Leaves</h4><p>View only your own leave requests.</p><span class="leave-arrow">→</span></a></div>
+            <div class="col-md-6 col-xl-4"><a asp-action="Summary" class="leave-action-card"><div class="leave-card-icon summary-icon"><i class="bi bi-bar-chart-line"></i></div><span class="leave-card-label">ALL ROLES</span><h4>My Leave Summary</h4><p>View your Pending, Approved and Rejected totals.</p><span class="leave-arrow">→</span></a></div>
+        }
+        @if (isManagement)
+        {
+            <div class="col-md-6 col-xl-4"><a asp-action="PendingLeaves" class="leave-action-card management-card"><div class="leave-card-icon pending-icon"><i class="bi bi-hourglass-split"></i></div><span class="leave-card-label">@role ONLY</span><h4>Pending Leaves</h4><p>Admin sees all pending requests. Supervisor sees Worker requests.</p><span class="leave-arrow">→</span></a></div>
+            <div class="col-md-6 col-xl-4"><div class="leave-action-card"><div class="leave-card-icon history-icon"><i class="bi bi-clock-history"></i></div><span class="leave-card-label">@role ONLY</span><h4>Worker Leave History</h4><p>Open a worker's history by Worker ID.</p><form asp-action="LeavesByWorker" method="get" class="d-flex gap-2 mt-3"><input name="workerId" type="number" min="1" class="form-control" placeholder="Worker ID" required /><button class="btn btn-sm btn-dark">View</button></form></div></div>
+            <div class="col-md-6 col-xl-4"><div class="leave-action-card"><div class="leave-card-icon summary-icon"><i class="bi bi-pie-chart"></i></div><span class="leave-card-label">@role ONLY</span><h4>Worker Summary</h4><p>View a worker's leave totals by Worker ID.</p><form asp-action="Summary" method="get" class="d-flex gap-2 mt-3"><input name="workerId" type="number" min="1" class="form-control" placeholder="Worker ID" required /><button class="btn btn-sm btn-dark">View</button></form></div></div>
+        }
+    </div>
+</div>
+<style>
+    .leave-page {
+        max-width: 1500px;
+        margin: auto
+    }
+
+    .leave-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 30px;
+        border-radius: 24px;
+        background: linear-gradient(135deg,#fff,#fff4ec);
+        box-shadow: 0 12px 40px rgba(0,0,0,.05)
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px
+    }
+
+    .leave-header h1 {
+        font-weight: 750
+    }
+
+    .role-pill {
+        padding: 10px 15px;
+        border-radius: 12px;
+        background: #fff1e8;
+        color: #e85b0c;
+        font-weight: 800
+    }
+
+    .leave-action-card {
+        display: block;
+        height: 100%;
+        padding: 28px;
+        border-radius: 22px;
+        background: #fff;
+        color: #212529;
+        text-decoration: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        transition: .2s
+    }
+
+        .leave-action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,.1);
+            color: #212529
+        }
+
+    .leave-card-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 18px;
+        background: #fff1e8;
+        color: #ff6b1a
+    }
+
+    .leave-card-label {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #888
+    }
+
+    .leave-action-card h4 {
+        font-weight: 750;
+        margin-top: 7px
+    }
+
+    .leave-action-card p {
+        color: #777;
+        margin-bottom: 0
+    }
+
+    .leave-arrow {
+        display: block;
+        margin-top: 18px;
+        font-weight: 800
+    }
+
+    .management-card {
+        border: 1px solid #ffe1d0
+    }
+
+    @@media (max-width:768px) {
+        .leave-header {
+            flex-direction: column;
+            align-items: flex-start
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

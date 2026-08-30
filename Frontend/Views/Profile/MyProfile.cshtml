@@ -1,0 +1,487 @@
+﻿@model Frontend.DTOs.MyProfileModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+<div class="container-fluid py-4 profile-page">
+    <div class="profile-head">
+        <div>
+            <span class="profile-kicker">PERSONAL WORKSPACE</span><h1>My Profile</h1><p>
+            @if (Model.Role == "Supervisor")
+            {
+                <span>Your CampSync workspace and assigned camp information.</span>
+            }
+            else if (Model.Role == "Driver")
+            {
+                <span>Your CampSync workspace, bus and route information.</span>
+            }
+            else if (Model.Role == "Worker")
+            {
+                <span>Your CampSync workspace, camp, room, bed and attendance information.</span>
+            }
+            else
+            {
+                <span>Everything connected to your CampSync account in one place.</span>
+            }
+        </p>
+    </div><div class="profile-role"><i class="bi bi-shield-check"></i>@Model.Role</div>
+</div>
+<div class="row g-4">
+    <div class="col-xl-4"><div class="profile-card h-100"><div class="profile-avatar"><i class="bi bi-person-fill"></i></div><h3>@Model.Name</h3><p class="text-muted mb-3">@Model.Email</p><span class="role-pill">@Model.Role</span><hr /><div class="info-row"><span>User ID</span><strong>#@Model.UserId</strong></div><div class="info-row"><span>Camp</span><strong>@(Model.Worker?.CampName ?? Model.Supervisor?.CampName ?? "Not assigned")</strong></div><div class="info-row"><span>Room</span><strong>@(Model.Worker != null ? Model.Worker.RoomNo.ToString() : "Not assigned")</strong></div><div class="info-row"><span>Bed</span><strong>@(Model.Worker != null ? Model.Worker.BedNo.ToString() : "Not assigned")</strong></div></div></div>
+    <div class="col-xl-8">
+        @if (Model.Role == "Supervisor" && Model.Supervisor != null)
+        {
+            <div class="profile-card mb-4 supervisor-camp-summary">
+                <div class="section-title">
+                    <i class="bi bi-building"></i>
+                    <div><h4>My Camp</h4><small>Your assigned camp</small></div>
+                </div>
+                <div class="supervisor-camp-grid">
+                    <div><span>Camp</span><strong>@Model.Supervisor.CampName</strong></div>
+                    <div><span>Location</span><strong>@Model.Supervisor.CampLocation</strong></div>
+                    <div><span>Rooms</span><strong>@Model.Supervisor.TotalRooms</strong></div>
+                    <div><span>Beds</span><strong>@Model.Supervisor.TotalBeds</strong></div>
+                    <div><span>Occupied</span><strong>@Model.Supervisor.OccupiedBeds</strong></div>
+                </div>
+            </div>
+        }
+        <div class="profile-card h-100">
+            <div class="section-title"><i class="bi bi-bus-front"></i><div><h4>My Bus</h4><small>Assigned transport and route information</small></div></div>@if(Model.Bus != null){
+            <div class="bus-summary"><div><span>Bus No</span><strong>@Model.Bus.BusNo</strong></div><div><span>Capacity</span><strong>@Model.Bus.Capacity</strong></div><div><span>Workers</span><strong>@Model.Bus.TotalWorkersAssigned</strong></div></div><h6 class="mt-4 mb-3">Route Stops</h6>@if(Model.Bus.RouteStops.Any()){
+            <div class="route-list">
+                @foreach (var stop in Model.Bus.RouteStops)
+                {
+                    <div class="route-item"><span class="route-number">@stop.SeqOrder</span><strong>@stop.StopName</strong></div>
+                }
+            </div>
+        }else
+        {
+
+            <div class="empty-box">No route stops assigned yet.</div>
+        }
+    }else
+    {
+        <div class="empty-box">
+            @if (Model.Role == "Driver")
+            {
+                <span>No bus is currently assigned to you.</span>
+            }
+            else
+            {
+                <span>No bus is currently assigned to this account.</span>
+            }
+        </div>
+    }
+</div>
+</div>
+<div class="col-xl-6">
+    <div class="profile-card">
+        <div class="section-title"><i class="bi bi-calendar-check"></i><div><h4>My Attendance</h4><small>Recent attendance records</small></div></div>@if(Model.Attendance.Any()){
+        <div class="mini-table">
+            @foreach (var a in Model.Attendance.Take(10))
+            {
+                <div><span>@a.AtDate.ToString("MMM dd, yyyy")</span><b>@a.Status</b></div>
+            }
+        </div>
+    }else if (Model.DriverAttendance.Any())
+    {
+
+        <div class="mini-table">
+            @foreach (var a in Model.DriverAttendance.Take(10))
+            {
+                <div><span>@a.AtDate.ToString("MMM dd, yyyy")</span><b>@a.Status</b></div>
+            }
+        </div>
+    }
+    else
+    {
+
+        <div class="empty-box">No attendance records are available for this role.</div>
+    }
+</div>
+</div>
+<div class="col-xl-6">
+    <div class="profile-card">
+        <div class="section-title"><i class="bi bi-calendar2-week"></i><div><h4>My Leaves</h4><small>Your submitted leave requests</small></div></div>@if(Model.Leaves.Any()){
+        <div class="mini-table">
+            @foreach (var l in Model.Leaves.Take(10))
+            {
+                <div><span>@l.FromDate.ToString("MMM dd") - @l.ToDate.ToString("MMM dd, yyyy")</span><b>@l.Status</b></div>
+            }
+        </div>
+    }else
+    {
+
+        <div class="empty-box">No leave requests found.</div>
+    }
+</div>
+</div>
+</div>
+</div>
+<style>
+    .profile-page {
+        max-width: 1450px;
+        margin: auto
+    }
+
+    .profile-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px
+    }
+
+    .profile-kicker {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: #ff6b1a;
+        font-weight: 800
+    }
+
+    .profile-head h1 {
+        font-weight: 800;
+        margin: 5px 0
+    }
+
+    .profile-head p {
+        color: #746a63;
+        margin: 0
+    }
+
+    .profile-role, .role-pill {
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 9px 14px;
+        border-radius: 12px;
+        font-weight: 700
+    }
+
+    .profile-role {
+        display: flex;
+        gap: 7px;
+        align-items: center
+    }
+
+    .profile-card {
+        background: #fff;
+        border: 1px solid #f1e4db;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 12px 35px rgba(50,30,20,.06)
+    }
+
+    .profile-avatar {
+        width: 76px;
+        height: 76px;
+        border-radius: 22px;
+        background: linear-gradient(135deg,#ff6b1a,#ff985a);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin-bottom: 18px
+    }
+
+    .profile-card h3 {
+        font-weight: 800
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 11px 0;
+        border-bottom: 1px solid #f4eee9;
+        color: #766c65
+    }
+
+        .info-row strong {
+            color: #2b2927
+        }
+
+    .section-title {
+        display: flex;
+        gap: 13px;
+        align-items: center
+    }
+
+        .section-title > i {
+            width: 45px;
+            height: 45px;
+            border-radius: 13px;
+            background: #fff0e7;
+            color: #ff6b1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px
+        }
+
+        .section-title h4 {
+            margin: 0;
+            font-weight: 800
+        }
+
+        .section-title small {
+            color: #8a7f77
+        }
+
+    .bus-summary {
+        display: flex;
+        gap: 12px;
+        margin-top: 22px
+    }
+
+        .bus-summary > div {
+            flex: 1;
+            background: #fff7f1;
+            border-radius: 14px;
+            padding: 14px
+        }
+
+        .bus-summary span, .bus-summary strong {
+            display: block
+        }
+
+        .bus-summary span {
+            font-size: 12px;
+            color: #877a72
+        }
+
+        .bus-summary strong {
+            font-size: 21px;
+            margin-top: 4px
+        }
+
+    .route-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+        gap: 10px
+    }
+
+    .route-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff7f1;
+        border: 1px solid #f2e7df;
+        padding: 10px;
+        border-radius: 12px
+    }
+
+    .route-number {
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+        background: #ff6b1a;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 12px
+    }
+
+    .mini-table > div {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f2ece7
+    }
+
+    .mini-table b {
+        color: #ff6b1a
+    }
+
+    .empty-box {
+        margin-top: 18px;
+        padding: 18px;
+        background: #fff7f1;
+        border-radius: 14px;
+        color: #776c64;
+        text-align: center
+    }
+
+    .supervisor-camp-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 20px
+    }
+
+        .supervisor-camp-grid > div {
+            background: #fff7f1;
+            border-radius: 14px;
+            padding: 13px 15px
+        }
+
+        .supervisor-camp-grid span, .supervisor-camp-grid strong {
+            display: block
+        }
+
+        .supervisor-camp-grid span {
+            font-size: 12px;
+            color: #877a72
+        }
+
+        .supervisor-camp-grid strong {
+            margin-top: 4px;
+            color: #2b2927
+        }
+
+    @@media (max-width:700px) {
+        .profile-head {
+            display: block
+        }
+
+        .profile-role {
+            display: inline-flex;
+            margin-top: 15px
+        }
+
+        .bus-summary {
+            flex-wrap: wrap
+        }
+
+            .bus-summary > div {
+                min-width: 30%
+            }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

@@ -1,0 +1,398 @@
+﻿@model Frontend.DTOs.BusResponseModel
+@{
+    ViewData["Title"] = "My Bus";
+    var role = Context.Session.GetString("role") ?? "";
+    var canView = User.Identity?.IsAuthenticated == true &&
+                  (role.Equals("Driver", StringComparison.OrdinalIgnoreCase) || role.Equals("Worker", StringComparison.OrdinalIgnoreCase));
+}
+@if (!canView)
+{
+    <div class="container py-5"><div class="alert alert-danger">You are not authorized to view this page.</div></div>
+}
+else
+{
+    <div class="container-fluid py-4 my-bus-page">
+        <div class="page-head">
+            <div>
+                <span class="page-kicker">MY TRANSPORT</span>
+                <h1>My Bus</h1>
+                <p>View your assigned bus and its route stops.</p>
+            </div>
+            <span class="role-pill"><i class="bi bi-bus-front-fill"></i> @role</span>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-warning">@ViewBag.Error</div>
+        }
+        else
+        {
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="bus-card h-100">
+                        <div class="bus-icon"><i class="bi bi-bus-front-fill"></i></div>
+                        <span class="label">ASSIGNED BUS</span>
+                        <h2>Bus #@Model.BusNo</h2>
+                        <div class="info-grid">
+                            <div><span>Bus ID</span><strong>#@Model.Id</strong></div>
+                            <div><span>Driver</span><strong>@(Model.DriverName ?? "Not assigned")</strong></div>
+                            <div><span>Capacity</span><strong>@Model.Capacity</strong></div>
+                            <div><span>Workers</span><strong>@Model.TotalWorkersAssigned</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="bus-card h-100">
+                        <div class="section-title">
+                            <div class="section-icon"><i class="bi bi-signpost-2-fill"></i></div>
+                            <div><h4>Route Stops</h4><small>Stops for the bus assigned to you</small></div>
+                        </div>
+                        @if (Model.RouteStops != null && Model.RouteStops.Any())
+                        {
+                            <div class="route-list">
+                                @foreach (var stop in Model.RouteStops.OrderBy(x => x.SeqOrder))
+                                {
+                                    <div class="route-item">
+                                        <span class="route-number">@stop.SeqOrder</span>
+                                        <div><strong>@stop.StopName</strong><small>Stop @stop.SeqOrder</small></div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="empty-box"><i class="bi bi-signpost"></i><br />No route stops have been assigned to this bus yet.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+<style>
+    body {
+        background: #fff7f1
+    }
+
+    .my-bus-page {
+        max-width: 1450px;
+        margin: auto
+    }
+
+    .page-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px
+    }
+
+    .page-kicker {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: #ff6b1a;
+        font-weight: 800
+    }
+
+    .page-head h1 {
+        font-weight: 800;
+        margin: 5px 0
+    }
+
+    .page-head p {
+        color: #746a63;
+        margin: 0
+    }
+
+    .role-pill {
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 9px 14px;
+        border-radius: 12px;
+        font-weight: 700
+    }
+
+    .bus-card {
+        background: #fff;
+        border: 1px solid #f1e4db;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 12px 35px rgba(50,30,20,.06)
+    }
+
+    .bus-icon, .section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 16px;
+        width: 58px;
+        height: 58px;
+        font-size: 25px;
+        margin-bottom: 16px
+    }
+
+    .label {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: #8a7f77;
+        font-weight: 800
+    }
+
+    .bus-card h2 {
+        font-weight: 800;
+        margin: 5px 0 25px
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px
+    }
+
+        .info-grid > div {
+            background: #fff7f1;
+            border: 1px solid #f2e7df;
+            border-radius: 14px;
+            padding: 14px
+        }
+
+        .info-grid span, .info-grid strong {
+            display: block
+        }
+
+        .info-grid span {
+            font-size: 12px;
+            color: #877a72
+        }
+
+        .info-grid strong {
+            margin-top: 5px;
+            color: #2b2927
+        }
+
+    .section-title {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        margin-bottom: 22px
+    }
+
+    .section-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 13px;
+        margin: 0;
+        font-size: 19px
+    }
+
+    .section-title h4 {
+        margin: 0;
+        font-weight: 800
+    }
+
+    .section-title small {
+        color: #8a7f77
+    }
+
+    .route-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+        gap: 10px
+    }
+
+    .route-item {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        background: #fff7f1;
+        border: 1px solid #f2e7df;
+        padding: 12px;
+        border-radius: 13px
+    }
+
+    .route-number {
+        width: 31px;
+        height: 31px;
+        border-radius: 9px;
+        background: #ff6b1a;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 12px;
+        flex: 0 0 auto
+    }
+
+    .route-item strong, .route-item small {
+        display: block
+    }
+
+    .route-item small {
+        color: #8a7f77;
+        font-size: 11px;
+        margin-top: 2px
+    }
+
+    .empty-box {
+        padding: 28px;
+        background: #fff7f1;
+        border-radius: 14px;
+        color: #776c64;
+        text-align: center
+    }
+
+    @@media (max-width:700px) {
+        .page-head {
+            display: block
+        }
+
+        .role-pill {
+            display: inline-flex;
+            margin-top: 15px
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

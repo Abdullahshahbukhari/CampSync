@@ -1,0 +1,447 @@
+﻿@using Frontend.DTOs
+@model List<BedResponseModel>
+
+@{
+    ViewData["Title"] = "Available Beds";
+
+    var camps =
+        ViewBag.Camps as List<CampResponseModel>
+        ?? new List<CampResponseModel>();
+
+    int? selectedCampId =
+        ViewBag.SelectedCampId as int?;
+}
+
+<div class="container-fluid py-4">
+
+    <div class="bed-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                BED AVAILABILITY
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Available Beds
+            </h1>
+
+            <p class="text-muted mb-0">
+                View all unoccupied beds in a selected camp.
+            </p>
+
+        </div>
+
+        <a asp-action="BedList"
+           class="btn btn-back">
+
+            <i class="bi bi-arrow-left me-2"></i>
+
+            Bed Management
+
+        </a>
+
+    </div>
+
+
+    <div class="availability-card mb-4">
+
+        <form asp-action="AvailableBeds"
+              method="get">
+
+            <div class="row align-items-end g-3">
+
+                <div class="col-md-8">
+
+                    <label class="form-label fw-semibold">
+
+                        Select Camp
+
+                    </label>
+
+                    <select name="campId"
+                            class="form-select filter-select">
+
+                        <option value="">
+                            -- Select Camp --
+                        </option>
+
+                        @foreach (var camp in camps)
+                        {
+                            @if (selectedCampId == camp.Id)
+                            {
+                                <option value="@camp.Id" selected>
+                                    @camp.Name
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@camp.Id">
+                                    @camp.Name
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <button type="submit"
+                            class="btn btn-bed-primary w-100">
+
+                        <i class="bi bi-search me-2"></i>
+
+                        View Available Beds
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+
+            @ViewBag.Error
+
+        </div>
+    }
+
+
+    @if (selectedCampId.HasValue)
+    {
+        <div class="row g-4">
+
+            @if (Model != null && Model.Any())
+            {
+                foreach (var bed in Model)
+                {
+                    <div class="col-sm-6 col-lg-4 col-xl-3">
+
+                        <div class="available-bed-card">
+
+                            <div class="bed-card-icon">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            </div>
+
+                            <h4 class="fw-bold mt-3">
+
+                                Bed @bed.BedNo
+
+                            </h4>
+
+                            <p class="text-muted mb-3">
+
+                                <i class="bi bi-door-open-fill me-1"></i>
+
+                                Room @bed.RoomNo
+
+                            </p>
+
+                            <span class="available-status">
+
+                                <i class="bi bi-check-circle-fill me-1"></i>
+
+                                Available
+
+                            </span>
+
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+
+                    <div class="empty-card text-center">
+
+                        <div class="empty-icon">
+
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+
+                        </div>
+
+                        <h4 class="fw-bold mt-3">
+
+                            No Available Beds
+
+                        </h4>
+
+                        <p class="text-muted mb-0">
+
+                            There are currently no available beds in this camp.
+
+                        </p>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .bed-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg,#ffffff,#fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .availability-card,
+    .available-bed-card,
+    .empty-card {
+        background: white;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 12px 35px rgba(0,0,0,.05);
+    }
+
+    .filter-select {
+        min-height: 50px;
+        border-radius: 13px;
+    }
+
+    .btn-bed-primary {
+        background: linear-gradient(135deg,#ff6b1a,#ff944d);
+        color: white;
+        border: none;
+        border-radius: 13px;
+        padding: 13px;
+        font-weight: 600;
+    }
+
+    .btn-back {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 13px;
+        padding: 12px 20px;
+    }
+
+    .available-bed-card {
+        text-align: center;
+        transition: .25s;
+    }
+
+        .available-bed-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .bed-card-icon {
+        width: 65px;
+        height: 65px;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        background: #e8f8ef;
+        color: #198754;
+        font-size: 27px;
+    }
+
+    .available-status {
+        display: inline-block;
+        background: #e8f8ef;
+        color: #198754;
+        padding: 8px 13px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .empty-icon {
+        width: 70px;
+        height: 70px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 20px;
+        font-size: 28px;
+    }
+
+    @@media(max-width: 768px) {
+
+        .bed-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 20px;
+        }
+    }
+
+
+
+
+  
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+        
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

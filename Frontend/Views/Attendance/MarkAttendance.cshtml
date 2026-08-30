@@ -1,0 +1,726 @@
+﻿@model Frontend.DTOs.BulkAttendanceViewModel
+
+@{
+    ViewData["Title"] = "Mark Attendance";
+}
+
+<div class="container py-4">
+
+  
+
+    <div class="page-header mb-4">
+
+        <div>
+            <span class="section-badge">
+                ATTENDANCE MANAGEMENT
+            </span>
+
+            <h1>
+                Mark Attendance
+            </h1>
+
+            <p>
+                Select a date and camp, then mark attendance for all workers.
+            </p>
+        </div>
+
+        <a asp-action="AttendanceList"
+           class="btn btn-outline-custom">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Attendance
+
+        </a>
+
+    </div>
+
+
+  
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+
+            <div asp-validation-summary="All"></div>
+
+        </div>
+    }
+
+
+    <form asp-action="MarkAttendance"
+          method="post"
+          id="attendanceForm">
+
+        @Html.AntiForgeryToken()
+
+
+        <div class="card border-0 main-card mb-4">
+
+            <div class="card-body p-4">
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+
+                            <i class="bi bi-calendar-date"></i>
+
+                            Attendance Date
+
+                        </label>
+
+                        <input asp-for="AtDate"
+                               type="date"
+                               class="form-control custom-input" />
+
+                    </div>
+
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+
+                            <i class="bi bi-buildings"></i>
+
+                            Select Camp
+
+                        </label>
+
+                        <select asp-for="CampId"
+                                id="campSelect"
+                                class="form-select custom-input">
+
+                            <option value="0">
+                                Select Camp
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="mt-4">
+
+                    <button type="button"
+                            id="loadWorkersBtn"
+                            class="btn btn-primary-custom">
+
+                        <i class="bi bi-people-fill me-2"></i>
+
+                        Load Workers
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card border-0 main-card"
+             id="workersCard"
+             style="display:none;">
+
+            <div class="card-body p-0">
+
+
+                <div class="workers-header">
+
+                    <div>
+
+                        <h4>
+                            <i class="bi bi-people-fill me-2"></i>
+
+                            Camp Workers
+                        </h4>
+
+                        <p>
+                            Select attendance status for every worker.
+                        </p>
+
+                    </div>
+
+                    <div class="worker-count"
+                         id="workerCount">
+
+                        0 Workers
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table attendance-table mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>Worker</th>
+
+                                <th>Worker ID</th>
+
+                                <th>Attendance Status</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="workersTableBody">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="p-4 text-end">
+
+                    <a asp-action="AttendanceList"
+                       class="btn btn-light me-2">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary-custom">
+
+                        <i class="bi bi-check-circle-fill me-2"></i>
+
+                        Mark All Attendance
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .page-header {
+        background: white;
+        padding: 30px;
+        border-radius: 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .page-header h1 {
+        font-weight: 700;
+        margin-top: 8px;
+    }
+
+    .page-header p {
+        margin-bottom: 0;
+        color: #888;
+    }
+
+    .main-card {
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+        .form-label i {
+            color: #ff6b1a;
+            margin-right: 5px;
+        }
+
+    .custom-input {
+        min-height: 50px;
+        border-radius: 12px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+        .btn-primary-custom:hover {
+            color: white;
+        }
+
+    .btn-outline-custom {
+        border: 1px solid #ffd5bd;
+        color: #ff6b1a;
+        border-radius: 12px;
+        padding: 10px 18px;
+    }
+
+    .workers-header {
+        padding: 25px;
+        background: #fff8f4;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .workers-header h4 {
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .workers-header p {
+            margin: 0;
+            color: #888;
+        }
+
+    .worker-count {
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .attendance-table th {
+        background: #fffaf7;
+        padding: 18px;
+        font-size: 13px;
+    }
+
+    .attendance-table td {
+        padding: 18px;
+        vertical-align: middle;
+    }
+
+    .worker-name {
+        font-weight: 600;
+    }
+
+    .status-select {
+        min-width: 160px;
+        border-radius: 10px;
+    }
+
+    @@media(max-width:768px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+    }
+
+
+
+
+    
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+   
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+   
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <script>
+
+        const campSelect =
+            document.getElementById("campSelect");
+
+        const loadWorkersBtn =
+            document.getElementById("loadWorkersBtn");
+
+        const workersCard =
+            document.getElementById("workersCard");
+
+        const workersTableBody =
+            document.getElementById("workersTableBody");
+
+        const workerCount =
+            document.getElementById("workerCount");
+
+        async function loadCamps() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        '/Attendance/GetCamps'
+                    );
+
+                const camps =
+                    await response.json();
+
+                camps.forEach(camp => {
+
+                    const option =
+                        document.createElement("option");
+
+                    option.value =
+                        camp.id;
+
+                    option.textContent =
+                        camp.name;
+
+                    campSelect.appendChild(option);
+
+                });
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+            }
+
+        }
+
+
+        loadWorkersBtn.addEventListener(
+            "click",
+            async function() {
+
+                const campId =
+                    campSelect.value;
+
+                if (
+                    !campId ||
+                    campId == "0"
+                ) {
+
+                    alert(
+                        "Please select a camp first."
+                    );
+
+                    return;
+
+                }
+
+                workersTableBody.innerHTML =
+                    `
+                                <tr>
+                                    <td colspan="4"
+                                        class="text-center p-4">
+
+                                        Loading workers...
+
+                                    </td>
+                                </tr>
+                                `;
+
+                workersCard.style.display =
+                    "block";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/Attendance/GetWorkersByCamp?campId=${campId}`
+                        );
+
+                    const workers =
+                        await response.json();
+
+
+                    workersTableBody.innerHTML =
+                        "";
+
+
+                    if (
+                        !workers ||
+                        workers.length === 0
+                    ) {
+
+                        workersTableBody.innerHTML =
+                            `
+                                        <tr>
+
+                                            <td colspan="4"
+                                                class="text-center p-4">
+
+                                                No workers found in this camp.
+
+                                            </td>
+
+                                        </tr>
+                                        `;
+
+                        workerCount.textContent =
+                            "0 Workers";
+
+                        return;
+
+                    }
+
+
+                    workerCount.textContent =
+                        `${workers.length} Workers`;
+
+
+                    workers.forEach(
+                        (worker, index) => {
+
+                            workersTableBody.innerHTML +=
+                                `
+
+                                            <tr>
+
+                                                <td>
+
+                                                    ${index + 1}
+
+                                                </td>
+
+
+                                                <td>
+
+                                                    <div class="worker-name">
+
+                                                        <i class="bi bi-person-fill me-2"></i>
+
+                                                        ${worker.name}
+
+                                                    </div>
+
+                                                </td>
+
+
+                                                <td>
+
+                                                    ${worker.id}
+
+                                                </td>
+
+
+                                                <td>
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="Attendances[${index}].WorkerId"
+                                                        value="${worker.id}" />
+
+                                                    <select
+                                                        name="Attendances[${index}].Status"
+                                                        class="form-select status-select">
+
+                                                        <option value="Present">
+                                                            Present
+                                                        </option>
+
+                                                        <option value="Absent">
+                                                            Absent
+                                                        </option>
+
+                                                        <option value="Leave">
+                                                            Leave
+                                                        </option>
+
+                                                    </select>
+
+                                                </td>
+
+                                            </tr>
+
+                                            `;
+
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    workersTableBody.innerHTML =
+                        `
+                                    <tr>
+
+                                        <td colspan="4"
+                                            class="text-center text-danger p-4">
+
+                                            Unable to load workers.
+
+                                        </td>
+
+                                    </tr>
+                                    `;
+
+                }
+
+            }
+        );
+
+
+        loadCamps();
+
+    </script>
+
+}

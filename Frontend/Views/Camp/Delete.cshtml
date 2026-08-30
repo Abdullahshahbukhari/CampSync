@@ -1,0 +1,375 @@
+﻿@model Frontend.DTOs.CampResponseModel
+
+@{
+    ViewData["Title"] = "Delete Camp";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card delete-card border-0">
+
+                <div class="card-body p-4 p-md-5 text-center">
+
+                    <div class="warning-icon">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                    </div>
+
+
+                    <h2 class="mt-4">
+                        Delete This Camp?
+                    </h2>
+
+                    <p class="text-muted">
+
+                        You are about to permanently delete this camp.
+                        Please review the information before continuing.
+
+                    </p>
+
+
+                    <div class="delete-info-card text-start mt-4">
+
+                        <div class="delete-info-row">
+
+                            <span class="info-label">
+
+                                <i class="bi bi-buildings me-2"></i>
+                                Camp Name
+
+                            </span>
+
+                            <strong>
+                                @Model.Name
+                            </strong>
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <div class="delete-info-row">
+
+                            <span class="info-label">
+
+                                <i class="bi bi-geo-alt me-2"></i>
+                                Location
+
+                            </span>
+
+                            <strong>
+                                @Model.Location
+                            </strong>
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <div class="row text-center g-3">
+
+                            <div class="col-6">
+
+                                <div class="delete-stat">
+
+                                    <span>Total Rooms</span>
+
+                                    <h3>
+                                        @Model.TotalRooms
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-6">
+
+                                <div class="delete-stat">
+
+                                    <span>Total Workers</span>
+
+                                    <h3>
+                                        @Model.TotalWorkers
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-warning mt-4 text-start">
+
+                        <i class="bi bi-info-circle me-2"></i>
+
+                        This action cannot be undone.
+
+                    </div>
+
+                    <form asp-action="DeleteConfirmed"
+                          asp-route-id="@Model.Id"
+                          method="post"
+                          class="d-flex gap-3 flex-column flex-sm-row mt-4">
+
+                        <a asp-action="Campbyid"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-cancel-delete flex-fill">
+
+                            Cancel
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-confirm-delete flex-fill">
+
+                            <i class="bi bi-trash me-2"></i>
+
+                            Yes, Delete Camp
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .delete-card {
+        border-radius: 30px;
+        box-shadow: 0 20px 55px rgba(0,0,0,.09);
+    }
+
+    .warning-icon {
+        width: 90px;
+        height: 90px;
+        margin: auto;
+        border-radius: 30px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+    }
+
+    .delete-info-card {
+        background: #fffaf7;
+        border: 1px solid #f2e9e4;
+        border-radius: 20px;
+        padding: 25px;
+    }
+
+    .delete-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .info-label {
+        color: #6c757d;
+    }
+
+        .info-label i {
+            color: #ff6b1a;
+        }
+
+    .delete-stat {
+        background: white;
+        border-radius: 16px;
+        padding: 18px;
+    }
+
+        .delete-stat span {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .delete-stat h3 {
+            margin: 5px 0 0;
+            font-weight: 700;
+        }
+
+    .btn-confirm-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        min-height: 52px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+        .btn-confirm-delete:hover {
+            background: #bb2d3b;
+            color: white;
+        }
+
+    .btn-cancel-delete {
+        background: #f1f1f1;
+        min-height: 52px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

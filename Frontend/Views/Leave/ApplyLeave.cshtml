@@ -1,0 +1,218 @@
+﻿@model Frontend.DTOs.LeaveCreateModel
+@{
+    ViewData["Title"] = "Apply Leave";
+}
+<div class="container-fluid py-4 leave-page">
+    <div class="leave-header mb-4">
+        <div><span class="section-badge">LEAVE MANAGEMENT</span><h1 class="mt-2 mb-1">Apply for Leave</h1><p class="text-muted mb-0">Submit your leave request. Your account is identified automatically.</p></div>
+        <a asp-action="LeaveHub" class="btn btn-outline-secondary">Back</a>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-9">
+            <div class="leave-main-card p-4 p-md-5">
+                <form asp-action="ApplyLeave" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <div class="row g-4">
+                        <div class="col-md-6"><label asp-for="FromDate" class="form-label fw-semibold">From Date</label><input asp-for="FromDate" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" /><span asp-validation-for="FromDate" class="text-danger"></span></div>
+                        <div class="col-md-6"><label asp-for="ToDate" class="form-label fw-semibold">To Date</label><input asp-for="ToDate" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" /><span asp-validation-for="ToDate" class="text-danger"></span></div>
+                        <div class="col-12"><label asp-for="Reason" class="form-label fw-semibold">Reason</label><textarea asp-for="Reason" class="form-control" rows="5" placeholder="Enter leave reason..."></textarea><span asp-validation-for="Reason" class="text-danger"></span></div>
+                    </div>
+                    <div class="d-flex gap-2 mt-4"><a asp-action="LeaveHub" class="btn btn-light border">Cancel</a><button class="btn btn-leave-primary" type="submit">Submit Leave</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .leave-page {
+        max-width: 1500px;
+        margin: auto
+    }
+
+    .leave-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 30px;
+        border-radius: 24px;
+        background: linear-gradient(135deg,#fff,#fff4ec);
+        box-shadow: 0 12px 40px rgba(0,0,0,.05)
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px
+    }
+
+    .leave-header h1 {
+        font-weight: 750
+    }
+
+    .leave-main-card {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06)
+    }
+
+    .btn-leave-primary {
+        background: #ff6b1a;
+        color: #fff;
+        border: 0;
+        border-radius: 11px;
+        font-weight: 700
+    }
+
+        .btn-leave-primary:hover {
+            background: #e85b0c;
+            color: #fff
+        }
+
+    @@media (max-width:768px) {
+        .leave-header {
+            flex-direction: column;
+            align-items: flex-start
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

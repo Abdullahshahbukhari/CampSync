@@ -1,0 +1,345 @@
+﻿@model Frontend.DTOs.RoomResponseModel
+
+@{
+    ViewData["Title"] = "Delete Room";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="delete-card">
+
+                <div class="delete-icon">
+
+                    <i class="bi bi-trash-fill"></i>
+
+                </div>
+
+
+                <span class="delete-badge">
+                    DELETE ROOM
+                </span>
+
+
+                <h2 class="fw-bold mt-3">
+                    Delete Room @Model.RoomNo?
+                </h2>
+
+
+                <p class="text-muted">
+
+                    You are about to permanently delete this room.
+                    Please confirm that you want to continue.
+
+                </p>
+
+
+                <div class="room-summary">
+
+                    <div>
+
+                        <span>
+                            Room Number
+                        </span>
+
+                        <strong>
+                            @Model.RoomNo
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Room ID
+                        </span>
+
+                        <strong>
+                            #@Model.Id
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Camp ID
+                        </span>
+
+                        <strong>
+                            #@Model.CampId
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <form asp-action="DeleteConfirmed"
+                      asp-route-id="@Model.Id"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="d-flex gap-3 mt-4">
+
+                        <a asp-action="Roombyid"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-cancel flex-fill">
+
+                            Cancel
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-danger-confirm flex-fill">
+
+                            <i class="bi bi-trash-fill me-2"></i>
+
+                            Yes, Delete Room
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .delete-card {
+        background: white;
+        padding: 45px;
+        text-align: center;
+        border-radius: 28px;
+        box-shadow: 0 20px 50px rgba(0,0,0,.08);
+    }
+
+    .delete-icon {
+        width: 80px;
+        height: 80px;
+        margin: auto;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffebeb;
+        color: #dc3545;
+        font-size: 32px;
+    }
+
+    .delete-badge {
+        display: inline-block;
+        margin-top: 20px;
+        color: #dc3545;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .room-summary {
+        background: #fff8f6;
+        padding: 20px;
+        border-radius: 18px;
+        margin-top: 25px;
+        text-align: left;
+    }
+
+        .room-summary div {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+            .room-summary div:last-child {
+                border-bottom: none;
+            }
+
+        .room-summary span {
+            color: #777;
+        }
+
+    .btn-danger-confirm {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 13px;
+        border-radius: 13px;
+        font-weight: 600;
+    }
+
+        .btn-danger-confirm:hover {
+            background: #bb2d3b;
+            color: white;
+        }
+
+    .btn-cancel {
+        border: 1px solid #ddd;
+        border-radius: 13px;
+        padding: 13px;
+        background: white;
+    }
+
+    @@media(max-width: 576px) {
+
+        .delete-card {
+            padding: 30px 22px;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+   
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

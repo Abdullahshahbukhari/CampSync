@@ -1,0 +1,770 @@
+﻿@model List<Frontend.DTOs.RouteStopResponseModel>
+
+@{
+    ViewData["Title"] = "Route Stop Management";
+    var currentRole = Context.Session.GetString("role") ?? "";
+    var loggedIn = !string.IsNullOrWhiteSpace(Context.Session.GetString("token"));
+    var canCreate = currentRole == "Admin";
+    var canEdit = currentRole == "Admin" || currentRole == "Supervisor";
+    var canDelete = currentRole == "Admin";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="route-header mb-4">
+
+        <div>
+            <span class="section-badge">
+                TRANSPORT MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Route Stops
+            </h1>
+
+            <p class="text-muted mb-0">
+                Manage bus routes and their pickup stops.
+            </p>
+        </div>
+
+        @if (canCreate)
+        {
+            <a asp-action="CreateRouteStop"
+               class="btn btn-route-primary mt-3 mt-md-0">
+                <i class="bi bi-plus-lg"></i>
+                Add Route Stop
+            </a>
+        }
+
+    </div>
+
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger shadow-sm border-0">
+
+            @ViewBag.Error
+
+        </div>
+    }
+
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-signpost-split-fill"></i>
+                </div>
+
+                <div>
+                    <span class="stat-label">
+                        Route Stops
+                    </span>
+
+                    <h2>
+                        @(Model?.Count ?? 0)
+                    </h2>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-bus-front-fill"></i>
+                </div>
+
+                <div>
+                    <span class="stat-label">
+                        Selected Bus
+                    </span>
+
+                    <h2 id="selectedBusText">
+                        @if (ViewBag.SelectedBusId != null)
+                        {
+                            <text>ID: @ViewBag.SelectedBusId</text>
+                        }
+                        else
+                        {
+                            <text>Not Selected</text>
+                        }
+                    </h2>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card route-main-card border-0">
+
+        <div class="card-body p-0">
+
+            <div class="route-list-top p-4">
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Route Stop Directory
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Select a bus to view its route stops.
+                    </p>
+
+                </div>
+
+
+                <form asp-action="RouteStopList"
+                      method="get"
+                      class="route-search-form">
+
+                    <select id="busId"
+                            name="busId"
+                            class="form-select route-select"
+                            required>
+
+                        <option value="">
+                            Loading buses...
+                        </option>
+
+                    </select>
+
+
+                    <button type="submit"
+                            class="btn btn-route-primary">
+
+                        <i class="bi bi-search"></i>
+
+                        View Stops
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0 route-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Sequence</th>
+
+                            <th>Stop Name</th>
+
+                            <th>Bus</th>
+
+                            <th class="text-center">
+                                Stop ID
+                            </th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var stop in Model)
+                            {
+                                <tr>
+
+                                    <td>
+
+                                        <span class="sequence-badge">
+
+                                            <i class="bi bi-list-ol"></i>
+
+                                            @stop.SeqOrder
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="stop-name">
+
+                                            <div class="stop-icon">
+
+                                                <i class="bi bi-geo-alt-fill"></i>
+
+                                            </div>
+
+                                            <strong>
+                                                @stop.StopName
+                                            </strong>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="bus-badge">
+
+                                            <i class="bi bi-bus-front-fill"></i>
+
+                                            Bus @stop.BusNo
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td class="text-center">
+
+                                        <span class="id-badge">
+
+                                            #@stop.Id
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="d-flex justify-content-end gap-2 action-buttons">
+
+                                            @if (canEdit)
+                                            {
+                                                <a asp-action="EditRouteStop"
+                                                   asp-route-id="@stop.Id"
+                                                   class="action-btn edit-btn">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                    Edit
+                                                </a>
+                                            }
+
+                                            @if (canDelete)
+                                            {
+                                                <a asp-action="DeleteRouteStop"
+                                                   asp-route-id="@stop.Id"
+                                                   class="action-btn delete-btn">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                    Delete
+                                                </a>
+                                            }
+
+                                            @if (!canEdit && !canDelete)
+                                            {
+                                                <span class="text-muted small">View only</span>
+                                            }
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="5"
+                                    class="text-center py-5 text-muted">
+
+                                    <div class="empty-state">
+
+                                        <div class="empty-icon">
+
+                                            <i class="bi bi-signpost-split-fill"></i>
+
+                                        </div>
+
+                                        <h5 class="fw-bold">
+                                            No Route Stops Found
+                                        </h5>
+
+                                        <p class="mb-0">
+                                            Select a bus to view its route stops.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .route-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .route-header h1 {
+        font-weight: 700;
+    }
+
+    .btn-route-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+        .btn-route-primary:hover {
+            color: white;
+        }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    }
+
+    .stat-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 25px;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .stat-card h2 {
+        margin: 3px 0 0;
+        font-weight: 700;
+    }
+
+    .route-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+    .route-list-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .route-search-form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .route-select {
+        min-width: 230px;
+        min-height: 48px;
+        border-radius: 12px;
+    }
+
+    .route-table thead {
+        background: #fff8f4;
+    }
+
+    .route-table th {
+        padding: 18px;
+        border: none;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+    }
+
+    .route-table td {
+        padding: 18px;
+    }
+
+    .sequence-badge,
+    .bus-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 8px 13px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .stop-name {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .stop-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .id-badge {
+        background: #f4f5f6;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .action-btn {
+        padding: 9px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .edit-btn {
+        background: #fff2df;
+        color: #e98a00;
+    }
+
+    .delete-btn {
+        background: #ffebeb;
+        color: #dc3545;
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin: auto auto 20px;
+    }
+
+    @@media (max-width: 768px) {
+
+        .route-header,
+        .route-list-top,
+        .route-search-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .route-select {
+            width: 100%;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function() {
+
+                const busSelect =
+                    document.getElementById("busId");
+
+                const selectedBusId =
+                    "@ViewBag.SelectedBusId";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            '@Url.Action("GetBuses", "RouteStop")'
+                        );
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Failed to load buses."
+                        );
+
+                    }
+
+                    const buses =
+                        await response.json();
+
+
+                    busSelect.innerHTML =
+                        '<option value="">Select Bus</option>';
+
+
+                    buses.forEach(function(bus) {
+
+                        const option =
+                            document.createElement("option");
+
+                        option.value =
+                            bus.id;
+
+                        option.text =
+                            `Bus ${bus.busNo} (ID: ${bus.id})`;
+
+                        if (
+                            bus.id == selectedBusId
+                        ) {
+                            option.selected = true;
+                        }
+
+                        busSelect.appendChild(option);
+
+                    });
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    busSelect.innerHTML =
+                        '<option value="">Unable to load buses</option>';
+
+                }
+
+            }
+        );
+
+    </script>
+
+}

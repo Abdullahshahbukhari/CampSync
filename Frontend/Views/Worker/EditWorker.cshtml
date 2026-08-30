@@ -1,0 +1,1188 @@
+﻿@model Frontend.DTOs.WorkerResponseModel
+
+@{
+    ViewData["Title"] = "Edit Worker";
+    var role = Context.Session.GetString("role");
+}
+
+<div class="container-fluid py-4">
+
+
+    <div class="worker-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                WORKER MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Edit Worker
+            </h1>
+
+            <p class="text-muted mb-0">
+                Update worker information, accommodation and transportation details.
+            </p>
+
+        </div>
+
+
+        <a asp-action="WorkerList"
+           class="btn btn-worker-outline mt-3 mt-md-0">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Workers
+
+        </a>
+
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+    @if (role != "Admin")
+    {
+        <div class="alert alert-danger shadow-sm border-0">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            You are not authorized to edit workers.
+        </div>
+
+        <a asp-action="WorkerList"
+           class="btn btn-worker-outline">
+
+            <i class="bi bi-arrow-left"></i>
+            Back to Workers
+
+        </a>
+    }
+    else
+    {
+
+        <div class="card worker-main-card border-0">
+
+            <div class="card-body p-0">
+
+
+                <div class="worker-form-top p-4">
+
+                    <div>
+
+                        <h4 class="mb-1 fw-bold">
+                            Worker Information
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Update the worker details below.
+                        </p>
+
+                    </div>
+
+
+                    <div class="worker-id-box">
+
+                        <i class="bi bi-person-badge-fill"></i>
+
+                        <span>
+                            Worker ID: #@Model.Id
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <form asp-action="UpdateWorker"
+                      asp-route-id="@Model.Id"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+
+                    <div class="p-4">
+
+                        <div class="row g-4">
+
+
+                            <div class="col-md-6">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-person-fill"></i>
+
+                                        Worker Name
+                                    </label>
+
+                                    <input type="text"
+                                           name="Name"
+                                           class="form-control custom-input"
+                                           value="@Model.Name"
+                                           required />
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-card-text"></i>
+
+                                        Iqama Number
+                                    </label>
+
+                                    <input type="text"
+                                           name="IqamaNo"
+                                           class="form-control custom-input"
+                                           value="@Model.IqamaNo"
+                                           required />
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-globe"></i>
+
+                                        Nationality
+                                    </label>
+
+                                    <input type="text"
+                                           name="Nationality"
+                                           class="form-control custom-input"
+                                           value="@Model.Nationality"
+                                           required />
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-tools"></i>
+
+                                        Trade
+                                    </label>
+
+                                    <input type="text"
+                                           name="Trade"
+                                           class="form-control custom-input"
+                                           value="@Model.Trade"
+                                           required />
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="section-divider mt-5 mb-4">
+
+                            <div class="section-divider-icon">
+
+                                <i class="bi bi-building"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h5 class="mb-1">
+                                    Accommodation Details
+                                </h5>
+
+                                <p class="text-muted mb-0">
+                                    Select camp, room and bed for this worker.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="row g-4">
+
+
+                            <div class="col-md-4">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-buildings-fill"></i>
+
+                                        Select Camp
+                                    </label>
+
+                                    <select id="campId"
+                                            name="CampId"
+                                            class="form-select custom-input"
+                                            data-selected="@Model.CampId"
+                                            required>
+
+                                        <option value="">
+                                            Loading camps...
+                                        </option>
+
+                                    </select>
+
+                                    <small class="form-text-custom">
+                                        Current: @Model.CampName
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-door-open-fill"></i>
+
+                                        Select Room
+                                    </label>
+
+                                    <select id="roomId"
+                                            class="form-select custom-input"
+                                            data-selected="@Model.RoomId"
+                                            required>
+
+                                        <option value="">
+                                            Loading rooms...
+                                        </option>
+
+                                    </select>
+
+                                    <small class="form-text-custom">
+                                        Current: Room @Model.RoomNo
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-house-door-fill"></i>
+
+                                        Select Bed
+                                    </label>
+
+                                    <select id="bedId"
+                                            name="BedId"
+                                            class="form-select custom-input"
+                                            data-selected="@Model.BedId"
+                                            required>
+
+                                        <option value="">
+                                            Loading beds...
+                                        </option>
+
+                                    </select>
+
+                                    <small class="form-text-custom">
+                                        Current: Bed @Model.BedNo
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="section-divider mt-5 mb-4">
+
+                            <div class="section-divider-icon">
+
+                                <i class="bi bi-bus-front-fill"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h5 class="mb-1">
+                                    Transportation Details
+                                </h5>
+
+                                <p class="text-muted mb-0">
+                                    Assign the worker to a transportation bus.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+
+                            <div class="col-md-6">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        <i class="bi bi-bus-front-fill"></i>
+
+                                        Select Bus
+                                    </label>
+
+                                    <select id="busId"
+                                            name="BusId"
+                                            class="form-select custom-input"
+                                            data-selected="@Model.BusId"
+                                            required>
+
+                                        <option value="">
+                                            Loading buses...
+                                        </option>
+
+                                    </select>
+
+                                    <small class="form-text-custom">
+                                        Current: Bus @Model.BusNo
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="form-actions mt-5 pt-4">
+
+                            <a asp-action="WorkerList"
+                               class="btn btn-worker-cancel">
+
+                                <i class="bi bi-x-lg"></i>
+
+                                Cancel
+
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-worker-primary">
+
+                                <i class="bi bi-check-lg"></i>
+
+                                Update Worker
+
+                            </button>
+
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    }
+</div>
+
+
+<style>
+    body {
+        background: #fff7f1;
+    }
+    .worker-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+
+    .worker-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+
+    .btn-worker-outline {
+        background: white;
+        color: #ff6b1a;
+        border: 1px solid #ffd5bd;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+
+        .btn-worker-outline:hover {
+            background: #fff0e7;
+            color: #ff6b1a;
+            transform: translateY(-2px);
+        }
+
+
+    .worker-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+        background: white;
+    }
+
+
+    .worker-form-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        background: #fff8f4;
+        border-bottom: 1px solid #f3ebe6;
+    }
+
+
+    .worker-id-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .form-group-custom {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+
+        .form-group-custom label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+
+            .form-group-custom label i {
+                color: #ff6b1a;
+                margin-right: 5px;
+            }
+    .custom-input {
+        min-height: 48px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        padding: 10px 14px;
+        transition: .25s;
+    }
+
+
+        .custom-input:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+
+    .form-text-custom {
+        color: #999;
+        font-size: 12px;
+    }
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 20px;
+        background: #fffaf7;
+        border-radius: 18px;
+    }
+
+
+        .section-divider h5 {
+            font-weight: 700;
+            color: #333;
+        }
+
+
+    .section-divider-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+    }
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        border-top: 1px solid #f1f1f1;
+    }
+
+
+    .btn-worker-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+        transition: .3s;
+    }
+
+
+        .btn-worker-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255,107,26,.35);
+        }
+
+
+    .btn-worker-cancel {
+        background: #f4f5f6;
+        color: #555;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        transition: .25s;
+    }
+
+
+        .btn-worker-cancel:hover {
+            background: #e9ecef;
+            color: #333;
+            transform: translateY(-2px);
+        }
+    @@media (max-width: 768px) {
+
+        .worker-header {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 24px;
+        }
+
+
+        .worker-form-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+
+            .form-actions a,
+            .form-actions button {
+                width: 100%;
+            }
+    }
+
+
+    @@media (max-width: 576px) {
+
+        .worker-header h1 {
+            font-size: 28px;
+        }
+    }
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", async function() {
+
+
+            const campSelect =
+                document.getElementById("campId");
+
+            const roomSelect =
+                document.getElementById("roomId");
+
+            const bedSelect =
+                document.getElementById("bedId");
+
+            const busSelect =
+                document.getElementById("busId");
+
+
+            const selectedCampId =
+                campSelect.dataset.selected;
+
+            const selectedRoomId =
+                roomSelect.dataset.selected;
+
+            const selectedBedId =
+                bedSelect.dataset.selected;
+
+            const selectedBusId =
+                busSelect.dataset.selected;
+
+            async function loadCamps() {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            '@Url.Action("GetCamps", "Worker")'
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Failed to load camps."
+                        );
+
+                    }
+
+
+                    const camps =
+                        await response.json();
+
+
+                    campSelect.innerHTML =
+                        '<option value="">Select Camp</option>';
+
+
+                    camps.forEach(function(camp) {
+
+                        const option =
+                            document.createElement("option");
+
+
+                        option.value =
+                            camp.id;
+
+
+                        option.text =
+                            `${camp.name} (ID: ${camp.id})`;
+
+
+                        if (
+                            camp.id == selectedCampId
+                        ) {
+
+                            option.selected = true;
+
+                        }
+
+
+                        campSelect.appendChild(
+                            option
+                        );
+
+                    });
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    campSelect.innerHTML =
+                        '<option value="">Unable to load camps</option>';
+
+                }
+
+            }
+            async function loadRooms(
+                campId,
+                currentRoomId = null
+            ) {
+
+                if (!campId) {
+
+                    roomSelect.innerHTML =
+                        '<option value="">Select Camp First</option>';
+
+
+                    bedSelect.innerHTML =
+                        '<option value="">Select Room First</option>';
+
+                    return;
+
+                }
+
+
+                roomSelect.innerHTML =
+                    '<option value="">Loading rooms...</option>';
+
+
+                bedSelect.innerHTML =
+                    '<option value="">Select Room First</option>';
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/Worker/GetRoomsByCamp?campId=${campId}`
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Failed to load rooms."
+                        );
+
+                    }
+
+
+                    const rooms =
+                        await response.json();
+
+
+                    roomSelect.innerHTML =
+                        '<option value="">Select Room</option>';
+
+
+                    rooms.forEach(function(room) {
+
+                        const option =
+                            document.createElement("option");
+
+
+                        option.value =
+                            room.id;
+
+
+                        option.text =
+                            `Room ${room.roomNo} (ID: ${room.id})`;
+
+
+                        if (
+                            currentRoomId != null &&
+                            room.id == currentRoomId
+                        ) {
+
+                            option.selected = true;
+
+                        }
+
+
+                        roomSelect.appendChild(
+                            option
+                        );
+
+                    });
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    roomSelect.innerHTML =
+                        '<option value="">Unable to load rooms</option>';
+
+                }
+
+            }
+            async function loadBeds(roomId, currentBedId = null) {
+
+                bedSelect.innerHTML =
+                    '<option value="">Select Bed</option>';
+
+
+                if (!roomId) {
+
+                    bedSelect.innerHTML =
+                        '<option value="">Select Room First</option>';
+
+                    return;
+                }
+
+
+                try {
+
+                    let url =
+                        `/Worker/GetBedsByRoom?roomId=${roomId}`;
+
+
+                    if (currentBedId) {
+
+                        url +=
+                            `&currentBedId=${currentBedId}`;
+
+                    }
+
+
+                    const response =
+                        await fetch(url);
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Failed to load beds."
+                        );
+
+                    }
+
+
+                    const beds =
+                        await response.json();
+
+                    if (!beds || beds.length === 0) {
+
+                        bedSelect.innerHTML =
+                            '<option value="">All beds in this room are occupied</option>';
+
+                        return;
+
+                    }
+
+                    bedSelect.innerHTML =
+                        '<option value="">Select Bed</option>';
+
+
+                    beds.forEach(function(bed) {
+
+                        const option =
+                            document.createElement("option");
+
+
+                        option.value =
+                            bed.id;
+
+
+                        if (
+                            currentBedId &&
+                            bed.id == currentBedId
+                        ) {
+
+                            option.text =
+                                `Bed ${bed.bedNo} (Current - ID: ${bed.id})`;
+
+                            option.selected = true;
+
+                        }
+                        else {
+
+                            option.text =
+                                `Bed ${bed.bedNo} (ID: ${bed.id})`;
+
+                        }
+
+
+                        bedSelect.appendChild(option);
+
+                    });
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+
+                    bedSelect.innerHTML =
+                        '<option value="">Unable to load beds</option>';
+
+                }
+
+            }
+            async function loadBuses() {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            '@Url.Action("GetBuses", "Worker")'
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Failed to load buses."
+                        );
+
+                    }
+
+
+                    const buses =
+                        await response.json();
+
+
+                    busSelect.innerHTML =
+                        '<option value="">Select Bus</option>';
+
+
+                    buses.forEach(function(bus) {
+
+                        const option =
+                            document.createElement("option");
+
+
+                        option.value =
+                            bus.id;
+
+
+                        option.text =
+                            `Bus ${bus.busNo} (ID: ${bus.id})`;
+
+
+                        if (
+                            bus.id == selectedBusId
+                        ) {
+
+                            option.selected = true;
+
+                        }
+
+
+                        busSelect.appendChild(
+                            option
+                        );
+
+                    });
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    busSelect.innerHTML =
+                        '<option value="">Unable to load buses</option>';
+
+                }
+
+            }
+
+            await loadCamps();
+
+
+            await loadRooms(
+                selectedCampId,
+                selectedRoomId
+            );
+
+
+            await loadBeds(
+                selectedRoomId,
+                selectedBedId
+            );
+
+
+            await loadBuses();
+
+            campSelect.addEventListener(
+                "change",
+                async function() {
+
+                    await loadRooms(
+                        this.value
+                    );
+
+
+                    bedSelect.innerHTML =
+                        '<option value="">Select Room First</option>';
+
+                }
+            );
+
+
+            roomSelect.addEventListener(
+                "change",
+                async function() {
+
+                    await loadBeds(
+                        this.value
+                    );
+
+                }
+            );
+
+        });
+
+    </script>
+
+}
+
+}

@@ -1,0 +1,1358 @@
+﻿@model List<Frontend.DTOs.WorkerResponseModel>
+
+@{
+    ViewData["Title"] = "Worker Management";
+    var role = Context.Session.GetString("role");
+}
+
+<div class="container-fluid py-4">
+
+    <div class="worker-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                WORKER MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Manage Your Workers
+            </h1>
+
+            <p class="text-muted mb-0">
+                Search and manage workers from one place.
+            </p>
+
+        </div>
+
+        @if (role == "Admin")
+        {
+            <a asp-action="CreateWorker"
+               class="btn btn-worker-primary mt-3 mt-md-0">
+
+                <i class="bi bi-plus-lg"></i>
+                Create Worker
+
+            </a>
+        }
+
+    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            @ViewBag.Error
+
+        </div>
+    }
+
+    <div class="row g-4 mb-4">
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-people-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Workers Found
+                    </span>
+
+                    <h2>
+                        @(Model?.Count ?? 0)
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-building"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Camps Found
+                    </span>
+
+                    <h2>
+                        @(Model?.Select(x => x.CampName).Distinct().Count() ?? 0)
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-activity"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        System Status
+                    </span>
+
+                    <h5 class="mb-0 text-success fw-bold">
+                        Active
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    @if (role == "Supervisor")
+    {
+        <div class="alert alert-info border-0 shadow-sm mb-4">
+            <i class="bi bi-shield-check me-2"></i>
+            Supervisor view is limited to your assigned camp. The backend also enforces this restriction.
+        </div>
+    }
+
+    <div class="card worker-main-card border-0">
+
+        <div class="card-body p-0">
+            <div class="worker-list-top p-4">
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Worker Directory
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Search workers by Worker ID or Camp ID.
+                    </p>
+
+                </div>
+                <form asp-action="WorkerList"
+                      method="get"
+                      class="worker-search-form">
+
+                    <select id="searchType"
+                            name="searchType"
+                            class="form-select search-select">
+
+                        <option value="">
+                            Search By
+                        </option>
+
+                        <option value="worker"
+                                selected="@(ViewBag.SearchType == "worker")">
+
+                            Worker ID
+
+                        </option>
+
+                        <option value="camp"
+                                selected="@(ViewBag.SearchType == "camp")">
+
+                            Camp
+
+                        </option>
+
+                    </select>
+
+                    <div id="workerSearchBox"
+                         class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="number"
+                               id="workerSearchId"
+                               name="searchId"
+                               class="form-control"
+                               value="@(ViewBag.SearchType == "worker" ? ViewBag.SearchId : "")"
+                               placeholder="Enter Worker ID..." />
+
+                    </div>
+
+                    <div id="campSearchBox"
+                         class="search-box"
+                         style="display:none;">
+
+                        <i class="bi bi-building"></i>
+
+                        <select id="campSearchId"
+                                name="searchId"
+                                class="form-select">
+
+                            <option value="">
+                                Select Camp
+                            </option>
+
+                        </select>
+
+                    </div>
+                    <button type="submit"
+                            class="btn btn-worker-primary">
+
+                        <i class="bi bi-search"></i>
+
+                        Search
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0 worker-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Worker
+                            </th>
+
+                            <th>
+                                Iqama No
+                            </th>
+
+                            <th>
+                                Nationality
+                            </th>
+
+                            <th>
+                                Bus
+                            </th>
+
+                            <th>
+                                Camp
+                            </th>
+
+                            <th>
+                                Bed
+                            </th>
+
+                            <th class="text-center">
+                                Worker ID
+                            </th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var worker in Model)
+                            {
+                                <tr>
+
+                                    <td>
+
+                                        <div class="d-flex align-items-center gap-3">
+
+                                            <div class="worker-avatar">
+
+                                                <i class="bi bi-person-fill"></i>
+
+                                            </div>
+
+                                            <div>
+
+                                                <h6 class="mb-1 fw-bold">
+
+                                                    @worker.Name
+
+                                                </h6>
+
+                                                <small class="text-muted">
+
+                                                    Registered Worker
+
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="worker-badge">
+
+                                            <i class="bi bi-card-text"></i>
+
+                                            @worker.IqamaNo
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="nationality-text">
+
+                                            <i class="bi bi-globe"></i>
+
+                                            @worker.Nationality
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="worker-badge">
+
+                                            <i class="bi bi-bus-front-fill"></i>
+
+                                            Bus @worker.BusNo
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="camp-text">
+
+                                            <i class="bi bi-building"></i>
+
+                                            @worker.CampName
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="worker-badge">
+
+                                            <i class="bi bi-door-closed-fill"></i>
+
+                                            Bed @worker.BedNo
+
+                                        </span>
+
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <span class="id-badge">
+
+                                            #@worker.Id
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex justify-content-end align-items-center gap-2 action-buttons">
+
+                                            @if (role == "Admin" || role == "Supervisor")
+                                            {
+                                                <a asp-action="WorkerById"
+                                                   asp-route-id="@worker.Id"
+                                                   class="action-btn details-btn">
+
+                                                    <i class="bi bi-eye-fill"></i>
+
+                                                    <span>
+                                                        Details
+                                                    </span>
+
+                                                </a>
+                                            }
+
+                                         
+                                            @if (role == "Admin")
+                                            {
+                                                <a asp-action="EditWorker"
+                                                   asp-route-id="@worker.Id"
+                                                   class="action-btn edit-btn">
+
+                                                    <i class="bi bi-pencil-square"></i>
+
+                                                    <span>
+                                                        Edit
+                                                    </span>
+
+                                                </a>
+                                                <a asp-action="DeleteWorker"
+                                                   asp-route-id="@worker.Id"
+                                                   class="action-btn delete-btn">
+
+                                                    <i class="bi bi-trash-fill"></i>
+
+                                                    <span>
+                                                        Delete
+                                                    </span>
+
+                                                </a>
+                                            }
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="8"
+                                    class="text-center py-5 text-muted">
+
+                                    <div class="empty-state">
+
+                                        <div class="empty-icon">
+
+                                            <i class="bi bi-people-fill"></i>
+
+                                        </div>
+
+                                        <h5 class="fw-bold">
+                                            No Workers Available
+                                        </h5>
+
+                                        <p class="mb-0">
+                                            Search by Worker ID or Camp ID.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    <script >
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+                                const searchType =
+                                    document.getElementById("searchType");
+
+                                const workerSearchBox =
+                                    document.getElementById("workerSearchBox");
+
+                                const campSearchBox =
+                                    document.getElementById("campSearchBox");
+
+                                const workerInput =
+                                    document.getElementById("workerIdInput");
+
+                                const campSelect =
+                                    document.getElementById("campSelect");
+
+
+                                // =====================================
+                                // LOAD CAMPS
+                                // =====================================
+
+                                async function loadCamps() {
+
+                                    try {
+
+                                        const response =
+                                            await fetch(
+                                                '@Url.Action("GetCamps", "Worker")'
+                                            );
+
+                                        if (!response.ok) {
+                                            return;
+                                        }
+
+                                        const camps =
+                                            await response.json();
+
+
+                                        campSelect.innerHTML =
+                                            '<option value="">Select Camp</option>';
+
+
+                                        camps.forEach(function (camp) {
+
+                                            const option =
+                                                document.createElement("option");
+
+                                            option.value =
+                                                camp.id;
+
+                                            option.text =
+                                                camp.name +
+                                                " (ID: " +
+                                                camp.id +
+                                                ")";
+
+
+                                            if (
+                                                '@ViewBag.SearchType' === "camp" &&
+                                                '@ViewBag.SearchId' == camp.id
+                                            ) {
+                                                option.selected = true;
+                                            }
+
+
+                                            campSelect.appendChild(option);
+
+                                        });
+
+                                    }
+                                    catch (error) {
+
+                                        console.error(
+                                            "Error loading camps:",
+                                            error
+                                        );
+
+                                    }
+
+                                }
+
+
+                                // =====================================
+                                // CHANGE SEARCH TYPE
+                                // =====================================
+
+                                function updateSearchField() {
+
+                                    const type =
+                                        searchType.value;
+
+
+                                    // WORKER ID
+
+                                    if (type === "worker") {
+
+                                        workerSearchBox.style.display =
+                                            "block";
+
+                                        campSearchBox.style.display =
+                                            "none";
+
+
+                                        workerInput.disabled =
+                                            false;
+
+                                        campSelect.disabled =
+                                            true;
+
+                                        return;
+                                    }
+
+
+                                    // CAMP
+
+                                    if (type === "camp") {
+
+                                        workerSearchBox.style.display =
+                                            "none";
+
+                                        campSearchBox.style.display =
+                                            "block";
+
+
+                                        workerInput.disabled =
+                                            true;
+
+                                        campSelect.disabled =
+                                            false;
+
+
+                                        loadCamps();
+
+                                        return;
+                                    }
+
+
+                                    // DEFAULT
+
+                                    workerSearchBox.style.display =
+                                        "none";
+
+                                    campSearchBox.style.display =
+                                        "none";
+
+
+                                    workerInput.disabled =
+                                        true;
+
+                                    campSelect.disabled =
+                                        true;
+
+                                }
+
+
+                                // CHANGE EVENT
+
+                                searchType.addEventListener(
+                                    "change",
+                                    updateSearchField
+                                );
+
+
+                                // PAGE LOAD
+
+                                updateSearchField();
+
+                            });
+
+    </script >
+
+    body {
+        background: #fff7f1;
+    }
+
+    .worker-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .worker-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .btn-worker-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+        transition: .3s;
+    }
+
+        .btn-worker-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255,107,26,.35);
+        }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+        height: 100%;
+    }
+
+    .stat-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 25px;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .stat-card h2 {
+        margin: 3px 0 0;
+        font-weight: 700;
+    }
+
+    .worker-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+    .worker-list-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .worker-search-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .search-select {
+        min-height: 45px;
+        width: 145px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+    }
+
+        .search-select:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+    .search-box {
+        position: relative;
+        width: 220px;
+    }
+
+    #campSearchBox {
+        width: 220px;
+    }
+
+        #campSearchBox select {
+            width: 100%;
+            min-height: 45px;
+            padding-left: 40px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+            #campSearchBox select:focus {
+                border-color: #ff9a5a;
+                box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+            }
+
+        .search-box i {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            color: #999;
+            z-index: 2;
+        }
+
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            min-height: 45px;
+        }
+
+            .search-box input:focus {
+                border-color: #ff9a5a;
+                box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+            }
+
+    .worker-table thead {
+        background: #fff8f4;
+    }
+
+    .worker-table th {
+        padding: 18px;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        border: none;
+    }
+
+    .worker-table td {
+        padding: 18px;
+        border-color: #f1f1f1;
+    }
+
+    .worker-table tbody tr {
+        transition: .25s;
+    }
+
+        .worker-table tbody tr:hover {
+            background: #fffaf7;
+        }
+
+    .worker-avatar {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        background: linear-gradient(135deg, #ff6b1a, #ff9a5a);
+        border-radius: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 22px;
+        box-shadow: 0 8px 18px rgba(255,107,26,.25);
+    }
+
+    .worker-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 8px 13px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .nationality-text,
+    .camp-text {
+        color: #555;
+        font-weight: 500;
+    }
+
+        .nationality-text i,
+        .camp-text i {
+            color: #ff6b1a;
+            margin-right: 5px;
+        }
+
+    .id-badge {
+        background: #f4f5f6;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all .25s ease;
+        white-space: nowrap;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .details-btn {
+        background: #eaf4ff;
+        color: #0d6efd;
+    }
+
+        .details-btn:hover {
+            background: #0d6efd;
+            color: white;
+            box-shadow: 0 8px 18px rgba(13,110,253,.20);
+        }
+
+    .edit-btn {
+        background: #fff2df;
+        color: #e98a00;
+    }
+
+        .edit-btn:hover {
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 8px 18px rgba(245,158,11,.20);
+        }
+
+    .delete-btn {
+        background: #ffebeb;
+        color: #dc3545;
+    }
+
+        .delete-btn:hover {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 8px 18px rgba(220,53,69,.20);
+        }
+
+    .empty-state {
+        padding: 30px;
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 32px;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto auto 20px;
+    }
+
+    @@media (max-width: 992px) {
+
+        .worker-search-form {
+            flex-wrap: wrap;
+        }
+
+        .action-buttons {
+            justify-content: flex-start !important;
+        }
+    }
+
+    @@media (max-width: 768px) {
+
+        .worker-header,
+        .worker-list-top {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .worker-search-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-select,
+        .search-box {
+            width: 100%;
+        }
+
+        .worker-header {
+            padding: 24px;
+        }
+    }
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-responsive > .table {
+        margin-bottom: 0;
+    }
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+        .input-group .form-control,
+        .input-group .form-select {
+            min-width: 0;
+        }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const searchType =
+            document.getElementById("searchType");
+
+        const workerSearchBox =
+            document.getElementById("workerSearchBox");
+
+        const campSearchBox =
+            document.getElementById("campSearchBox");
+
+        const workerSearchId =
+            document.getElementById("workerSearchId");
+
+        const campSearchId =
+            document.getElementById("campSearchId");
+
+
+        searchType.addEventListener("change", function() {
+
+            const selectedType = this.value;
+
+
+            if (selectedType === "worker") {
+
+                workerSearchBox.style.display =
+                    "block";
+
+                campSearchBox.style.display =
+                    "none";
+
+                workerSearchId.disabled =
+                    false;
+
+                campSearchId.disabled =
+                    true;
+
+                workerSearchId.value = "";
+
+                campSearchId.value = "";
+
+            }
+
+            else if (selectedType === "camp") {
+
+                workerSearchBox.style.display =
+                    "none";
+
+                campSearchBox.style.display =
+                    "block";
+
+                workerSearchId.disabled =
+                    true;
+
+                campSearchId.disabled =
+                    false;
+
+                loadCamps();
+
+            }
+
+            else {
+
+                workerSearchBox.style.display =
+                    "block";
+
+                campSearchBox.style.display =
+                    "none";
+
+                workerSearchId.disabled =
+                    false;
+
+                campSearchId.disabled =
+                    true;
+
+            }
+
+        });
+
+        function loadCamps() {
+
+            if (campSearchId.options.length > 1) {
+                return;
+            }
+
+
+            fetch('/Worker/GetCamps')
+
+                .then(response => {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Failed to load camps"
+                        );
+
+                    }
+
+                    return response.json();
+
+                })
+
+                .then(camps => {
+
+                    campSearchId.innerHTML =
+                        '<option value="">Select Camp</option>';
+
+
+                    camps.forEach(camp => {
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+                        option.value =
+                            camp.id;
+
+                        option.text =
+                            camp.name +
+                            " (ID: " +
+                            camp.id +
+                            ")";
+                        if (
+                            '@ViewBag.SearchType' === "camp"
+                            &&
+                            '@ViewBag.SearchId' == camp.id
+                        ) {
+
+                            option.selected =
+                                true;
+
+                        }
+
+
+                        campSearchId.appendChild(
+                            option
+                        );
+
+                    });
+
+                })
+
+                .catch(error => {
+
+                    console.error(
+                        error
+                    );
+
+                });
+
+        }
+
+        const currentSearchType =
+            searchType.value;
+
+
+        if (currentSearchType === "camp") {
+
+            workerSearchBox.style.display =
+                "none";
+
+            campSearchBox.style.display =
+                "block";
+
+            workerSearchId.disabled =
+                true;
+
+            campSearchId.disabled =
+                false;
+
+            loadCamps();
+
+        }
+
+        else if (
+            currentSearchType === "worker"
+        ) {
+
+            workerSearchBox.style.display =
+                "block";
+
+            campSearchBox.style.display =
+                "none";
+
+            workerSearchId.disabled =
+                false;
+
+            campSearchId.disabled =
+                true;
+
+        }
+
+        else {
+
+            campSearchBox.style.display =
+                "none";
+
+            campSearchId.disabled =
+                true;
+
+        }
+
+    });
+
+</script>

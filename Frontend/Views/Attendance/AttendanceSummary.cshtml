@@ -1,0 +1,458 @@
+﻿@model Frontend.DTOs.AttendanceSummaryModel
+
+@{
+    ViewData["Title"] = "Attendance Summary";
+
+    var workerName =
+        ViewBag.WorkerName as string
+        ?? $"Worker #{Model.WorkerId}";
+
+    var total =
+        Model.TotalPresent +
+        Model.TotalAbsent +
+        Model.TotalLeave;
+
+    double presentPercentage =
+        total == 0
+        ? 0
+        : Math.Round(
+            (double)Model.TotalPresent /
+            total * 100
+        );
+
+    double absentPercentage =
+        total == 0
+        ? 0
+        : Math.Round(
+            (double)Model.TotalAbsent /
+            total * 100
+        );
+
+    double leavePercentage =
+        total == 0
+        ? 0
+        : Math.Round(
+            (double)Model.TotalLeave /
+            total * 100
+        );
+}
+
+
+<div class="container py-5">
+
+
+
+    <a asp-action="AttendanceList"
+       class="back-link">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back to Attendance List
+
+    </a>
+
+
+    <div class="summary-card">
+
+        <div class="summary-header">
+
+            <span>
+                ATTENDANCE SUMMARY
+            </span>
+
+            <h2>
+                @workerName
+            </h2>
+
+        </div>
+
+
+        <div class="summary-content">
+
+
+
+            <div class="total-circle">
+
+                <div>
+
+                    <h2>
+
+                        @total
+
+                    </h2>
+
+                    <small>
+
+                        Total
+
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        
+
+            <div class="summary-details">
+
+
+      
+
+                <div class="summary-row">
+
+                    <div>
+
+                        <span class="dot present-dot"></span>
+
+                        <strong>
+                            Present
+                        </strong>
+
+                        <small>
+
+                            @Model.TotalPresent record(s)
+
+                        </small>
+
+                    </div>
+
+                    <strong>
+
+                        @presentPercentage%
+
+                    </strong>
+
+                </div>
+
+
+           
+
+                <div class="summary-row">
+
+                    <div>
+
+                        <span class="dot absent-dot"></span>
+
+                        <strong>
+                            Absent
+                        </strong>
+
+                        <small>
+
+                            @Model.TotalAbsent record(s)
+
+                        </small>
+
+                    </div>
+
+                    <strong>
+
+                        @absentPercentage%
+
+                    </strong>
+
+                </div>
+
+
+
+                <div class="summary-row">
+
+                    <div>
+
+                        <span class="dot leave-dot"></span>
+
+                        <strong>
+                            Leave
+                        </strong>
+
+                        <small>
+
+                            @Model.TotalLeave record(s)
+
+                        </small>
+
+                    </div>
+
+                    <strong>
+
+                        @leavePercentage%
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .back-link {
+        display: inline-block;
+        text-decoration: none;
+        color: #666;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+        .back-link:hover {
+            color: #ff6b1a;
+        }
+
+    .summary-card {
+        max-width: 720px;
+        margin: auto;
+        background: white;
+        border-radius: 25px;
+        padding: 45px;
+        box-shadow: 0 15px 40px rgba(0,0,0,.08);
+    }
+
+    .summary-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .summary-header span {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #ff6b1a;
+        }
+
+        .summary-header h2 {
+            margin-top: 10px;
+            font-weight: 700;
+        }
+
+    .summary-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 60px;
+    }
+
+    .total-circle {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 12px solid #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 0 0 12px #fff0e7;
+    }
+
+        .total-circle h2 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .total-circle small {
+            color: #888;
+        }
+
+    .summary-details {
+        min-width: 280px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+        .summary-row small {
+            display: block;
+            color: #999;
+            margin-left: 18px;
+            margin-top: 3px;
+        }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .present-dot {
+        background: #198754;
+    }
+
+    .absent-dot {
+        background: #dc3545;
+    }
+
+    .leave-dot {
+        background: #ff6b1a;
+    }
+
+    @@media(max-width:768px) {
+
+        .summary-card {
+            padding: 30px;
+        }
+
+        .summary-content {
+            flex-direction: column;
+            gap: 40px;
+        }
+    }
+
+
+
+
+    /* CampSync responsive UI only */
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

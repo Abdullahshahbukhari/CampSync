@@ -1,0 +1,407 @@
+﻿@model Frontend.DTOs.CampCreateModel
+
+@{
+    ViewData["Title"] = "Create Camp";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-xl-7">
+
+           
+            <a asp-action="CampList"
+               class="back-link">
+
+                <i class="bi bi-arrow-left"></i>
+                Back to Camps
+
+            </a>
+
+            <div class="card create-camp-card border-0 mt-4">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-5">
+
+                        <div class="form-main-icon">
+
+                            <i class="bi bi-building-add"></i>
+
+                        </div>
+
+                        <h2 class="mt-3">
+                            Create New Camp
+                        </h2>
+
+                        <p class="text-muted">
+                            Add a new camp to the CampSync management system.
+                        </p>
+
+                    </div>
+
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+
+                            <i class="bi bi-exclamation-circle me-2"></i>
+
+                            @ViewBag.Error
+
+                        </div>
+                    }
+
+
+                    <form asp-action="CreateCamp"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label asp-for="Name"
+                                   class="form-label custom-label">
+
+                                Camp Name
+
+                            </label>
+
+                            <div class="input-group custom-input">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-buildings"></i>
+
+                                </span>
+
+                                <input asp-for="Name"
+                                       class="form-control"
+                                       placeholder="Enter camp name" />
+
+                            </div>
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label asp-for="Location"
+                                   class="form-label custom-label">
+
+                                Camp Location
+
+                            </label>
+
+                            <div class="input-group custom-input">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-geo-alt"></i>
+
+                                </span>
+
+                                <input asp-for="Location"
+                                       class="form-control"
+                                       placeholder="Enter camp location" />
+
+                            </div>
+
+                            <span asp-validation-for="Location"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="SupervisorUserId" class="form-label custom-label">
+                                Camp Supervisor
+                            </label>
+
+                            <div class="input-group custom-input">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-badge"></i>
+                                </span>
+
+                                <select asp-for="SupervisorUserId" class="form-select">
+                                    <option value="0">Select Supervisor</option>
+                                    @foreach (var supervisor in
+                                        (ViewBag.Supervisors as List<Frontend.DTOs.SupervisorAvailableModel>)
+                                        ?? new List<Frontend.DTOs.SupervisorAvailableModel>())
+                                    {
+                                        <option value="@supervisor.UserId">
+                                            @supervisor.Name - @supervisor.Email
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <span asp-validation-for="SupervisorUserId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex gap-3 flex-column flex-sm-row">
+
+                            <a asp-action="CampList"
+                               class="btn btn-light-custom flex-fill">
+
+                                Cancel
+
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-create-camp flex-fill">
+
+                                <i class="bi bi-plus-circle me-2"></i>
+
+                                Create Camp
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .back-link {
+        color: #6c757d;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .back-link:hover {
+            color: #ff6b1a;
+        }
+
+    .create-camp-card {
+        border-radius: 28px;
+        box-shadow: 0 20px 50px rgba(0,0,0,.08);
+    }
+
+    .form-main-icon {
+        width: 75px;
+        height: 75px;
+        margin: auto;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #ff6b1a, #ff9a5a);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        box-shadow: 0 12px 25px rgba(255,107,26,.25);
+    }
+
+    .custom-label {
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .custom-input .input-group-text {
+        background: #fff4ed;
+        border: 1px solid #eee;
+        border-right: none;
+        color: #ff6b1a;
+        border-radius: 14px 0 0 14px;
+    }
+
+    .custom-input .form-control,
+    .custom-input .form-select {
+        border-left: none;
+        min-height: 52px;
+        border-radius: 0 14px 14px 0;
+    }
+
+        .custom-input .form-control:focus {
+            box-shadow: none;
+            border-color: #ff8b4a;
+        }
+
+    .btn-create-camp {
+        background: linear-gradient(135deg, #ff6b1a, #ff934c);
+        color: white;
+        border: none;
+        min-height: 52px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+        .btn-create-camp:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-light-custom {
+        background: #f5f5f5;
+        min-height: 52px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

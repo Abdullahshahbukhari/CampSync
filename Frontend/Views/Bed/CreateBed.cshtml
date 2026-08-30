@@ -1,0 +1,470 @@
+﻿@using Frontend.DTOs
+@model BedCreateModel
+
+@{
+    ViewData["Title"] = "Create Bed";
+
+    var camps =
+        ViewBag.Camps as List<CampResponseModel>
+        ?? new List<CampResponseModel>();
+
+    var rooms =
+        ViewBag.Rooms as List<RoomResponseModel>
+        ?? new List<RoomResponseModel>();
+
+    int? selectedCampId =
+        ViewBag.SelectedCampId as int?;
+}
+
+<div class="container py-4">
+
+    <div class="page-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                BED MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Create New Bed
+            </h1>
+
+            <p class="text-muted mb-0">
+                Add a new bed to a room.
+            </p>
+
+        </div>
+
+        <a asp-action="BedList"
+           asp-route-campId="@selectedCampId"
+           class="btn btn-back">
+
+            <i class="bi bi-arrow-left me-2"></i>
+
+            Back to Beds
+
+        </a>
+
+    </div>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card form-card border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="form-icon">
+
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+
+                    </div>
+
+                    <h3 class="fw-bold mt-3">
+                        Bed Information
+                    </h3>
+
+                    <p class="text-muted mb-4">
+                        Select a camp, then choose a room and enter the bed number.
+                    </p>
+
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+
+                            @ViewBag.Error
+
+                        </div>
+                    }
+
+
+
+                    <form asp-action="CreateBed"
+                          method="get"
+                          class="mb-4">
+
+                        <label class="form-label">
+                            Select Camp
+                        </label>
+
+                        <select name="campId"
+                                class="form-select"
+                                onchange="this.form.submit()">
+
+                            <option value="">
+                                -- Select Camp --
+                            </option>
+
+                            @foreach (var camp in camps)
+                            {
+                                @if (selectedCampId == camp.Id)
+                                {
+                                    <option value="@camp.Id" selected>
+                                        @camp.Name
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@camp.Id">
+                                        @camp.Name
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+                    </form>
+
+
+                    <form asp-action="CreateBed"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="campId"
+                               value="@selectedCampId" />
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="RoomId"
+                                   class="form-label">
+
+                                Select Room
+
+                            </label>
+
+                            <div class="input-group custom-input">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-door-open-fill"></i>
+
+                                </span>
+
+                                <select asp-for="RoomId"
+                                        class="form-select">
+
+                                    <option value="0">
+                                        -- Select Room --
+                                    </option>
+
+                                    @foreach (var room in rooms)
+                                    {
+                                        <option value="@room.Id">
+
+                                            Room @room.RoomNo
+
+                                        </option>
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <span asp-validation-for="RoomId"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="BedNo"
+                                   class="form-label">
+
+                                Bed Number
+
+                            </label>
+
+                            <div class="input-group custom-input">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-grid-3x3-gap-fill"></i>
+
+                                </span>
+
+                                <input asp-for="BedNo"
+                                       class="form-control"
+                                       placeholder="Enter bed number" />
+
+                            </div>
+
+                            <span asp-validation-for="BedNo"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <div class="d-flex gap-3">
+
+                            <a asp-action="BedList"
+                               asp-route-campId="@selectedCampId"
+                               class="btn btn-cancel flex-fill">
+
+                                Cancel
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-bed-primary flex-fill">
+
+                                <i class="bi bi-plus-circle-fill me-2"></i>
+
+                                Create Bed
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .form-card {
+        border-radius: 25px;
+        box-shadow: 0 15px 45px rgba(0,0,0,.07);
+    }
+
+    .form-icon {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 21px;
+        background: linear-gradient(135deg,#ff6b1a,#ff9a5a);
+        color: white;
+        font-size: 28px;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .custom-input {
+        border-radius: 13px;
+        overflow: hidden;
+        border: 1px solid #eee;
+    }
+
+        .custom-input .input-group-text {
+            border: none;
+            background: #fff7f2;
+            color: #ff6b1a;
+        }
+
+        .custom-input .form-control,
+        .custom-input .form-select {
+            border: none;
+            min-height: 50px;
+            box-shadow: none;
+        }
+
+    .btn-bed-primary {
+        background: linear-gradient(135deg,#ff6b1a,#ff944d);
+        color: white;
+        border: none;
+        border-radius: 13px;
+        padding: 13px;
+        font-weight: 600;
+    }
+
+    .btn-back,
+    .btn-cancel {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 13px;
+        padding: 12px 20px;
+    }
+
+    @@media(max-width: 576px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 20px;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

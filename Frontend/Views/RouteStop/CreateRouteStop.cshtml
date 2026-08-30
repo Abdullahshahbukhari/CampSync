@@ -1,0 +1,1087 @@
+﻿@model Frontend.DTOs.RouteStopCreatePageModel
+
+@{
+    ViewData["Title"] = "Create Route Stops";
+    var currentRole = Context.Session.GetString("role") ?? "";
+    var canCreate = currentRole == "Admin";
+}
+
+<div class="container-fluid py-4">
+
+    @if (!canCreate)
+    {
+        <div class="alert alert-danger shadow-sm border-0">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            Only Admin can create route stops.
+        </div>
+        <a asp-action="RouteStopList" class="btn btn-route-outline">
+            <i class="bi bi-arrow-left"></i> Back to Route Stops
+        </a>
+        return;
+    }
+
+
+    <div class="route-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                ROUTE MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Create Route Stops
+            </h1>
+
+            <p class="text-muted mb-0">
+                Select a bus and add one or multiple stops with sequence order.
+            </p>
+
+        </div>
+
+        <a asp-action="RouteStopList"
+           class="btn btn-route-outline mt-3 mt-md-0">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Route Stops
+
+        </a>
+
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            @Html.ValidationSummary(false)
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    <div class="card route-main-card border-0">
+
+        <div class="card-body p-0">
+
+
+            <div class="route-form-top p-4">
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Route Stop Information
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Add stops in the order the bus will visit them.
+                    </p>
+
+                </div>
+
+                <div class="route-icon-box">
+
+                    <i class="bi bi-sign-turn-right-fill"></i>
+
+                </div>
+
+            </div>
+
+
+            <form asp-action="CreateRouteStop"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <div class="p-4">
+
+
+                    <div class="row mb-5">
+
+                        <div class="col-lg-6">
+
+                            <div class="form-group-custom">
+
+                                <label for="busId">
+
+                                    <i class="bi bi-bus-front-fill"></i>
+
+                                    Select Bus
+
+                                </label>
+
+
+                                <select id="busId"
+                                        name="BusId"
+                                        class="form-select custom-input"
+                                        required>
+
+                                    <option value="">
+                                        Loading buses...
+                                    </option>
+
+                                </select>
+
+                                <small class="form-text-custom">
+
+                                    Select the bus for these route stops.
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="section-divider mb-4">
+
+                        <div class="section-divider-icon">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                        </div>
+
+
+                        <div class="flex-grow-1">
+
+                            <h5 class="mb-1">
+                                Route Stops
+                            </h5>
+
+                            <p class="text-muted mb-0">
+                                Add as many stops as required.
+                            </p>
+
+                        </div>
+
+
+                        <button type="button"
+                                id="addStopBtn"
+                                class="btn btn-add-stop">
+
+                            <i class="bi bi-plus-lg"></i>
+
+                            Add Another Stop
+
+                        </button>
+
+                    </div>
+
+
+                    <div id="stopsContainer">
+
+
+                        @for (int i = 0; i < Model.Stops.Count; i++)
+                        {
+                            <div class="stop-card">
+
+                                <div class="stop-card-header">
+
+                                    <div class="stop-number">
+
+                                        <i class="bi bi-geo-alt-fill"></i>
+
+                                        <span class="stop-title">
+                                            Stop @(i + 1)
+                                        </span>
+
+                                    </div>
+
+
+                                    <button type="button"
+                                            class="btn-remove-stop">
+
+                                        <i class="bi bi-trash-fill"></i>
+
+                                        Remove
+
+                                    </button>
+
+                                </div>
+
+
+                                <div class="row g-4">
+
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group-custom">
+
+                                            <label>
+
+                                                <i class="bi bi-list-ol"></i>
+
+                                                Sequence Order
+
+                                            </label>
+
+
+                                            <input type="number"
+                                                   name="Stops[@i].SeqOrder"
+                                                   value="@Model.Stops[i].SeqOrder"
+                                                   class="form-control custom-input sequence-input"
+                                                   min="1"
+                                                   placeholder="Example: 1"
+                                                   required />
+
+                                            <small class="form-text-custom">
+
+                                                Enter the stop order.
+
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-8">
+
+                                        <div class="form-group-custom">
+
+                                            <label>
+
+                                                <i class="bi bi-geo-alt-fill"></i>
+
+                                                Stop Name
+
+                                            </label>
+
+
+                                            <input type="text"
+                                                   name="Stops[@i].StopName"
+                                                   value="@Model.Stops[i].StopName"
+                                                   class="form-control custom-input"
+                                                   placeholder="Example: Main Gate"
+                                                   required />
+
+                                            <small class="form-text-custom">
+
+                                                Enter the route stop name.
+
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        }
+
+
+                    </div>
+
+
+                    <div class="form-actions mt-5 pt-4">
+
+                        <a asp-action="RouteStopList"
+                           class="btn btn-route-cancel">
+
+                            <i class="bi bi-x-lg"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-route-primary">
+
+                            <i class="bi bi-check-lg"></i>
+
+                            Create Route Stops
+
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<template id="stopTemplate">
+
+    <div class="stop-card">
+
+        <div class="stop-card-header">
+
+            <div class="stop-number">
+
+                <i class="bi bi-geo-alt-fill"></i>
+
+                <span class="stop-title">
+                    New Stop
+                </span>
+
+            </div>
+
+
+            <button type="button"
+                    class="btn-remove-stop">
+
+                <i class="bi bi-trash-fill"></i>
+
+                Remove
+
+            </button>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <div class="col-md-4">
+
+                <div class="form-group-custom">
+
+                    <label>
+
+                        <i class="bi bi-list-ol"></i>
+
+                        Sequence Order
+
+                    </label>
+
+
+                    <input type="number"
+                           class="form-control custom-input sequence-input"
+                           min="1"
+                           placeholder="Example: 1"
+                           required />
+
+
+                    <small class="form-text-custom">
+
+                        Enter the stop order.
+
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-8">
+
+                <div class="form-group-custom">
+
+                    <label>
+
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                        Stop Name
+
+                    </label>
+
+
+                    <input type="text"
+                           class="form-control custom-input"
+                           placeholder="Example: Main Gate"
+                           required />
+
+
+                    <small class="form-text-custom">
+
+                        Enter the route stop name.
+
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</template>
+
+
+
+<style>
+
+  
+
+    body {
+        background: #fff7f1;
+    }
+
+
+
+    .route-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+
+    .route-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+
+
+    .btn-route-outline {
+        background: white;
+        color: #ff6b1a;
+        border: 1px solid #ffd5bd;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+
+        .btn-route-outline:hover {
+            background: #fff0e7;
+            color: #ff6b1a;
+            transform: translateY(-2px);
+        }
+
+
+    .route-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+        background: white;
+    }
+
+
+    .route-form-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        background: #fff8f4;
+        border-bottom: 1px solid #f3ebe6;
+    }
+
+
+    .route-icon-box {
+        width: 55px;
+        height: 55px;
+        border-radius: 16px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .form-group-custom {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+
+        .form-group-custom label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+
+            .form-group-custom label i {
+                color: #ff6b1a;
+                margin-right: 5px;
+            }
+
+
+    .custom-input {
+        min-height: 50px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        padding: 10px 14px;
+        transition: .25s;
+    }
+
+
+        .custom-input:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+
+    .form-text-custom {
+        color: #999;
+        font-size: 12px;
+    }
+
+
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 20px;
+        background: #fffaf7;
+        border-radius: 18px;
+    }
+
+
+        .section-divider h5 {
+            font-weight: 700;
+            color: #333;
+        }
+
+
+    .section-divider-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+    }
+
+
+    .btn-add-stop {
+        background: #fff0e7;
+        color: #ff6b1a;
+        border: 1px solid #ffd5bd;
+        border-radius: 12px;
+        padding: 10px 18px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: .25s;
+    }
+
+
+        .btn-add-stop:hover {
+            background: #ff6b1a;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+
+    .stop-card {
+        background: #ffffff;
+        border: 1px solid #f1e5de;
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,.035);
+    }
+
+
+    .stop-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f3ebe6;
+    }
+
+
+    .stop-number {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #ff6b1a;
+        font-weight: 700;
+    }
+
+
+    .btn-remove-stop {
+        background: #fff1f0;
+        color: #dc3545;
+        border: none;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .25s;
+    }
+
+
+        .btn-remove-stop:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        border-top: 1px solid #f1f1f1;
+    }
+
+
+    .btn-route-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+        transition: .3s;
+    }
+
+
+        .btn-route-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255,107,26,.35);
+        }
+
+
+    .btn-route-cancel {
+        background: #f4f5f6;
+        color: #555;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        transition: .25s;
+    }
+
+
+        .btn-route-cancel:hover {
+            background: #e9ecef;
+            color: #333;
+            transform: translateY(-2px);
+        }
+
+
+    @@media (max-width: 768px) {
+
+        .route-header {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 24px;
+        }
+
+
+        .section-divider {
+            flex-wrap: wrap;
+        }
+
+
+        .btn-add-stop {
+            width: 100%;
+        }
+
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+
+            .form-actions a,
+            .form-actions button {
+                width: 100%;
+            }
+    }
+
+
+    @@media (max-width: 576px) {
+
+        .stop-card-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+        }
+
+
+        .btn-remove-stop {
+            width: 100%;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function() {
+
+
+                const busSelect =
+                    document.getElementById("busId");
+
+                const stopsContainer =
+                    document.getElementById("stopsContainer");
+
+                const addStopBtn =
+                    document.getElementById("addStopBtn");
+
+                const stopTemplate =
+                    document.getElementById("stopTemplate");
+
+
+                async function loadBuses() {
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                '@Url.Action("GetBuses", "RouteStop")'
+                            );
+
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                "Failed to load buses."
+                            );
+
+                        }
+
+
+                        const buses =
+                            await response.json();
+
+
+                        busSelect.innerHTML =
+                            '<option value="">Select Bus</option>';
+
+
+                        buses.forEach(function(bus) {
+
+                            const option =
+                                document.createElement("option");
+
+
+                            option.value =
+                                bus.id;
+
+
+                            option.text =
+                                `Bus ${bus.busNo} (ID: ${bus.id})`;
+
+
+                            busSelect.appendChild(option);
+
+                        });
+
+                    }
+                    catch (error) {
+
+                        console.error(error);
+
+                        busSelect.innerHTML =
+                            '<option value="">Unable to load buses</option>';
+
+                    }
+
+                }
+
+
+                function updateStopIndexes() {
+
+                    const stopCards =
+                        stopsContainer.querySelectorAll(
+                            ".stop-card"
+                        );
+
+
+                    stopCards.forEach(
+                        function(card, index) {
+
+
+                            const title =
+                                card.querySelector(
+                                    ".stop-title"
+                                );
+
+
+                            if (title) {
+
+                                title.textContent =
+                                    `Stop ${index + 1}`;
+
+                            }
+
+
+                            const inputs =
+                                card.querySelectorAll("input");
+
+
+                            const sequenceInput =
+                                inputs[0];
+
+                            const stopNameInput =
+                                inputs[1];
+
+
+                            sequenceInput.name =
+                                `Stops[${index}].SeqOrder`;
+
+
+                            stopNameInput.name =
+                                `Stops[${index}].StopName`;
+
+                        }
+                    );
+
+                }
+
+                function attachRemoveEvent(button) {
+
+                    button.addEventListener(
+                        "click",
+                        function() {
+
+                            const cards =
+                                stopsContainer.querySelectorAll(
+                                    ".stop-card"
+                                );
+
+
+                                alert(
+                                    "At least one route stop is required."
+                                );
+
+                                return;
+
+                            }
+
+
+                            this.closest(
+                                ".stop-card"
+                            ).remove();
+
+
+                            updateStopIndexes();
+
+                        }
+                    );
+
+                }
+
+
+                document.querySelectorAll(
+                    ".btn-remove-stop"
+                ).forEach(
+                    attachRemoveEvent
+                );
+
+
+                addStopBtn.addEventListener(
+                    "click",
+                    function() {
+
+                        const templateContent =
+                            stopTemplate.content.cloneNode(true);
+
+
+                        stopsContainer.appendChild(
+                            templateContent
+                        );
+
+
+                        updateStopIndexes();
+
+
+                        const lastCard =
+                            stopsContainer.lastElementChild;
+
+
+                        const removeButton =
+                            lastCard.querySelector(
+                                ".btn-remove-stop"
+                            );
+
+
+                        attachRemoveEvent(
+                            removeButton
+                        );
+
+                    }
+                );
+
+                await loadBuses();
+
+            }
+        );
+
+    </script>
+
+}

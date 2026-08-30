@@ -1,0 +1,991 @@
+﻿@model Frontend.DTOs.WorkerDTO
+
+@{
+    ViewData["Title"] = "Create Worker";
+    var role = Context.Session.GetString("role");
+}
+
+<div class="container-fluid py-4">
+
+
+
+    <div class="worker-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                WORKER MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Create New Worker
+            </h1>
+
+            <p class="text-muted mb-0">
+                Register a worker and assign camp, room, bed and bus.
+            </p>
+
+        </div>
+
+        <a asp-action="WorkerList"
+           class="btn btn-worker-secondary mt-3 mt-md-0">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Workers
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         VALIDATION
+    ========================== -->
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3">
+    </div>
+
+
+    <!-- =========================
+         FORM CARD
+    ========================== -->
+
+    <div class="card worker-main-card border-0">
+
+        <div class="card-body p-4 p-md-5">
+            @if (role != "Admin")
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-shield-lock-fill me-2"></i>
+                    You are not authorized to create workers.
+                </div>
+
+                <a asp-action="WorkerList"
+                   class="btn btn-worker-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Workers
+                </a>
+            }
+            else
+            {
+
+
+                <form asp-action="CreateWorker"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+
+                    <!-- =========================
+                     BASIC INFORMATION
+                ========================== -->
+
+                    <div class="form-section-title">
+
+                        <div class="section-icon">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <h5>
+                                Worker Information
+                            </h5>
+
+                            <p>
+                                Enter the worker's personal information.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-4 mb-5">
+
+                        <div class="col-md-6">
+                            <label asp-for="UserId" class="form-label">Worker Login User</label>
+                            <select asp-for="UserId" class="form-select worker-input" required>
+                                <option value="">Select Worker User</option>
+                                @foreach (var user in (ViewBag.WorkerUsers as List<Frontend.DTOs.UserDropdownModel>) ?? new List<Frontend.DTOs.UserDropdownModel>())
+                                {
+                                    <option value="@user.Id">@user.Name (@user.Email)</option>
+                                }
+                            </select>
+                            <div class="form-text">Select an existing account with the Worker role.</div>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                        </div>
+
+
+                        <!-- NAME -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Name"
+                                   class="form-label">
+
+                                Worker Name
+
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control worker-input"
+                                   placeholder="Enter worker name" />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <!-- IQAMA -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="IqamaNo"
+                                   class="form-label">
+
+                                Iqama Number
+
+                            </label>
+
+                            <input asp-for="IqamaNo"
+                                   class="form-control worker-input"
+                                   placeholder="Enter Iqama number" />
+
+                            <span asp-validation-for="IqamaNo"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <!-- NATIONALITY -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Nationality"
+                                   class="form-label">
+
+                                Nationality
+
+                            </label>
+
+                            <input asp-for="Nationality"
+                                   class="form-control worker-input"
+                                   placeholder="Enter nationality" />
+
+                            <span asp-validation-for="Nationality"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <!-- TRADE -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Trade"
+                                   class="form-label">
+
+                                Trade
+
+                            </label>
+
+                            <input asp-for="Trade"
+                                   class="form-control worker-input"
+                                   placeholder="Enter worker trade" />
+
+                            <span asp-validation-for="Trade"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================
+                     ASSIGNMENT SECTION
+                ========================== -->
+
+                    <div class="form-section-title">
+
+                        <div class="section-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <div>
+
+                            <h5>
+                                Worker Assignment
+                            </h5>
+
+                            <p>
+                                Select camp, room, bed and transportation.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-4">
+
+
+                        <!-- =========================
+                         CAMP
+                    ========================== -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="CampId"
+                                   class="form-label">
+
+                                Select Camp
+
+                            </label>
+
+                            <select asp-for="CampId"
+                                    id="campDropdown"
+                                    class="form-select worker-input">
+
+                                <option value="">
+                                    Loading camps...
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="CampId"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <!-- =========================
+                         ROOM
+                    ========================== -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+
+                                Select Room
+
+                            </label>
+
+                            <select id="roomDropdown"
+                                    class="form-select worker-input"
+                                    disabled>
+
+                                <option value="">
+                                    Select a camp first
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- =========================
+                         BED
+                    ========================== -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="BedId"
+                                   class="form-label">
+
+                                Select Bed
+
+                            </label>
+
+                            <select asp-for="BedId"
+                                    id="bedDropdown"
+                                    class="form-select worker-input"
+                                    disabled>
+
+                                <option value="">
+                                    Select a room first
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="BedId"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <!-- =========================
+                         BUS
+                    ========================== -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="BusId"
+                                   class="form-label">
+
+                                Select Bus
+
+                            </label>
+
+                            <select asp-for="BusId"
+                                    id="busDropdown"
+                                    class="form-select worker-input">
+
+                                <option value="">
+                                    Loading buses...
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="BusId"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================
+                     BUTTONS
+                ========================== -->
+
+                    <div class="d-flex justify-content-end gap-3 mt-5">
+
+                        <a asp-action="WorkerList"
+                           class="btn btn-worker-cancel">
+
+                            Cancel
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-worker-primary">
+
+                            <i class="bi bi-check-lg"></i>
+
+                            Create Worker
+
+                        </button>
+
+                    </div>
+
+                </form>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     CSS
+========================== -->
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+
+    /* HEADER */
+
+    .worker-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+
+    .worker-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+
+    /* CARD */
+
+    .worker-main-card {
+        border-radius: 24px;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+
+
+    /* SECTION */
+
+    .form-section-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+
+    .section-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 17px;
+        font-size: 22px;
+    }
+
+
+    .form-section-title h5 {
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+
+
+    .form-section-title p {
+        color: #6c757d;
+        margin: 0;
+        font-size: 14px;
+    }
+
+
+    /* FORM */
+
+    .form-label {
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 8px;
+    }
+
+
+    .worker-input {
+        min-height: 48px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        padding: 10px 14px;
+    }
+
+
+        .worker-input:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+
+        .worker-input:disabled {
+            background: #f8f8f8;
+            cursor: not-allowed;
+        }
+
+
+    /* PRIMARY BUTTON */
+
+    .btn-worker-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+        transition: .3s;
+    }
+
+
+        .btn-worker-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255,107,26,.35);
+        }
+
+
+    /* SECONDARY */
+
+    .btn-worker-secondary {
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 14px;
+        padding: 12px 20px;
+        font-weight: 600;
+    }
+
+
+        .btn-worker-secondary:hover {
+            background: #ff6b1a;
+            color: white;
+        }
+
+
+    /* CANCEL */
+
+    .btn-worker-cancel {
+        background: #f4f5f6;
+        color: #555;
+        border-radius: 14px;
+        padding: 12px 24px;
+        font-weight: 600;
+    }
+
+
+        .btn-worker-cancel:hover {
+            background: #e5e5e5;
+            color: #333;
+        }
+
+
+    /* RESPONSIVE */
+
+    @@media (max-width: 768px) {
+
+        .worker-header {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 24px;
+        }
+    }
+
+
+
+
+    /* CampSync responsive UI only */
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    /* Tables remain fully usable on small screens without changing
+           their columns or data. */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    /* For existing tables that are not already inside Bootstrap's
+           table-responsive wrapper. */
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+        /* Keep horizontal action groups usable without forcing
+               the page wider than the viewport. */
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+
+            const campDropdown =
+                document.getElementById("campDropdown");
+
+            const roomDropdown =
+                document.getElementById("roomDropdown");
+
+            const bedDropdown =
+                document.getElementById("bedDropdown");
+
+            const busDropdown =
+                document.getElementById("busDropdown");
+
+
+            // =====================================
+            // LOAD CAMPS
+            // =====================================
+
+            fetch('@Url.Action("GetCamps", "Worker")')
+                .then(response => response.json())
+                .then(data => {
+
+                    campDropdown.innerHTML =
+                        '<option value="">Select Camp</option>';
+
+
+                    data.forEach(camp => {
+
+                        const option =
+                            document.createElement("option");
+
+                        option.value =
+                            camp.id;
+
+                        option.text =
+                            `${camp.name} (ID: ${camp.id})`;
+
+                        campDropdown.appendChild(option);
+
+                    });
+
+                })
+                .catch(() => {
+
+                    campDropdown.innerHTML =
+                        '<option value="">Unable to load camps</option>';
+
+                });
+
+
+            // =====================================
+            // LOAD BUSES
+            // =====================================
+
+            fetch('@Url.Action("GetBuses", "Worker")')
+                .then(response => response.json())
+                .then(data => {
+
+                    busDropdown.innerHTML =
+                        '<option value="">Select Bus</option>';
+
+
+                    data.forEach(bus => {
+
+                        const option =
+                            document.createElement("option");
+
+                        option.value =
+                            bus.id;
+
+                        option.text =
+                            `Bus No: ${bus.busNo} (ID: ${bus.id})`;
+
+                        busDropdown.appendChild(option);
+
+                    });
+
+                })
+                .catch(() => {
+
+                    busDropdown.innerHTML =
+                        '<option value="">Unable to load buses</option>';
+
+                });
+
+
+            // =====================================
+            // CAMP CHANGE
+            // LOAD ROOMS
+            // =====================================
+
+            campDropdown.addEventListener(
+                "change",
+                function() {
+
+                    const campId =
+                        this.value;
+
+
+                    roomDropdown.innerHTML =
+                        '<option value="">Loading rooms...</option>';
+
+                    roomDropdown.disabled =
+                        true;
+
+
+                    bedDropdown.innerHTML =
+                        '<option value="">Select a room first</option>';
+
+                    bedDropdown.disabled =
+                        true;
+
+
+                    if (!campId) {
+
+                        roomDropdown.innerHTML =
+                            '<option value="">Select a camp first</option>';
+
+                        return;
+
+                    }
+
+
+                    fetch(
+                        '@Url.Action("GetRoomsByCamp", "Worker")'
+                        + '?campId='
+                        + campId
+                    )
+                        .then(response => response.json())
+                        .then(data => {
+
+                            roomDropdown.innerHTML =
+                                '<option value="">Select Room</option>';
+
+
+                            if (!data ||
+                                data.length === 0) {
+
+                                roomDropdown.innerHTML =
+                                    '<option value="">No rooms available</option>';
+
+                                return;
+
+                            }
+
+
+                            data.forEach(room => {
+
+                                const option =
+                                    document.createElement("option");
+
+                                option.value =
+                                    room.id;
+
+                                option.text =
+                                    `Room No: ${room.roomNo} (ID: ${room.id})`;
+
+                                roomDropdown.appendChild(option);
+
+                            });
+
+
+                            roomDropdown.disabled =
+                                false;
+
+                        })
+                        .catch(() => {
+
+                            roomDropdown.innerHTML =
+                                '<option value="">Unable to load rooms</option>';
+
+                        });
+
+                }
+            );
+
+
+            // =====================================
+            // ROOM CHANGE
+            // LOAD AVAILABLE BEDS
+            // =====================================
+
+            roomDropdown.addEventListener(
+                "change",
+                function() {
+
+                    const roomId =
+                        this.value;
+
+
+                    bedDropdown.innerHTML =
+                        '<option value="">Loading beds...</option>';
+
+                    bedDropdown.disabled =
+                        true;
+
+
+                    if (!roomId) {
+
+                        bedDropdown.innerHTML =
+                            '<option value="">Select a room first</option>';
+
+                        return;
+
+                    }
+
+
+                    fetch(
+                        '@Url.Action("GetBedsByRoom", "Worker")'
+                        + '?roomId='
+                        + roomId
+                    )
+                        .then(response => response.json())
+                        .then(data => {
+
+                            bedDropdown.innerHTML =
+                                '<option value="">Select Bed</option>';
+
+
+                            if (!data ||
+                                data.length === 0) {
+
+                                bedDropdown.innerHTML =
+                                    '<option value="">No available beds</option>';
+
+                                return;
+
+                            }
+
+
+                            data.forEach(bed => {
+
+                                const option =
+                                    document.createElement("option");
+
+                                option.value =
+                                    bed.id;
+
+                                option.text =
+                                    `Bed No: ${bed.bedNo} (ID: ${bed.id})`;
+
+                                bedDropdown.appendChild(option);
+
+                            });
+
+
+                            bedDropdown.disabled =
+                                false;
+
+                        })
+                        .catch(() => {
+
+                            bedDropdown.innerHTML =
+                                '<option value="">Unable to load beds</option>';
+
+                        });
+
+                }
+            );
+
+        });
+
+    </script>
+}

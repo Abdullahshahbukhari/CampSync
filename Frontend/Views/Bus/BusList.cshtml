@@ -1,0 +1,962 @@
+﻿@model List<Frontend.DTOs.BusResponseModel>
+
+@{
+    ViewData["Title"] = "Bus Management";
+}
+
+<div class="container-fluid py-4">
+
+
+    <div class="bus-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                BUS MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Manage Your Buses
+            </h1>
+
+            <p class="text-muted mb-0">
+                View, manage and organize all buses from one place.
+            </p>
+
+        </div>
+
+
+        @if (Context.Session.GetString("role") == "Admin")
+        {
+            <a asp-action="CreateBus"
+               class="btn btn-bus-primary mt-3 mt-md-0">
+
+                <i class="bi bi-plus-lg"></i>
+
+                Create Bus
+
+            </a>
+        }
+
+    </div>
+
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+             role="alert">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            @ViewBag.Error
+
+        </div>
+    }
+
+
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-bus-front-fill"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="stat-label">
+                        Total Buses
+                    </span>
+
+                    <h2>
+                        @(Model?.Count ?? 0)
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-people-fill"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="stat-label">
+                        Workers Assigned
+                    </span>
+
+                    <h2>
+                        @(Model?.Sum(x => x.TotalWorkersAssigned) ?? 0)
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-activity"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="stat-label">
+                        System Status
+                    </span>
+
+                    <h5 class="mb-0 text-success fw-bold">
+                        Active
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card bus-main-card border-0">
+
+        <div class="card-body p-0">
+
+
+            <div class="bus-list-top p-4">
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Bus Directory
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        All registered buses in your system.
+                    </p>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           id="busSearch"
+                           class="form-control"
+                           placeholder="Search bus..." />
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0 bus-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Bus
+                            </th>
+
+                            <th>
+                                Driver
+                            </th>
+
+                            <th class="text-center">
+                                Assigned Workers
+                            </th>
+
+                            <th class="text-center">
+                                Bus ID
+                            </th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="busTableBody">
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var bus in Model)
+                            {
+                                <tr>
+
+
+                                    <td>
+
+                                        <div class="d-flex align-items-center gap-3">
+
+
+                                            <div class="bus-avatar">
+
+                                                <i class="bi bi-bus-front-fill"></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <h6 class="mb-1 fw-bold">
+
+                                                    Bus @bus.BusNo
+
+                                                </h6>
+
+
+                                                <small class="text-muted">
+
+                                                    Transportation Management
+
+                                                </small>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="driver-text">
+
+                                            <i class="bi bi-person-fill"></i>
+
+                                            @bus.DriverName
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td class="text-center">
+
+                                        <span class="worker-badge">
+
+                                            <i class="bi bi-people-fill"></i>
+
+                                            @bus.TotalWorkersAssigned Workers
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td class="text-center bus-id-cell"
+                                        data-bus-id="@bus.Id">
+
+                                        <span class="id-badge">
+
+                                            #@bus.Id
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="d-flex justify-content-end align-items-center gap-2 action-buttons">
+
+                                            @if (Context.Session.GetString("role") == "Admin" ||
+                                                 Context.Session.GetString("role") == "Supervisor")
+                                            {
+                                                <a asp-action="Busbyid"
+                                                   asp-route-id="@bus.Id"
+                                                   class="action-btn details-btn">
+
+                                                    <i class="bi bi-eye-fill"></i>
+
+                                                    <span>
+                                                        Details
+                                                    </span>
+
+                                                </a>
+                                            }
+
+                                            @if (Context.Session.GetString("role") == "Admin" ||
+                                                 Context.Session.GetString("role") == "Supervisor")
+                                            {
+                                                <a asp-action="EditBus"
+                                                   asp-route-id="@bus.Id"
+                                                   class="action-btn edit-btn">
+
+                                                    <i class="bi bi-pencil-square"></i>
+
+                                                    <span>
+                                                        Edit
+                                                    </span>
+
+                                                </a>
+                                            }
+
+                                            @if (Context.Session.GetString("role") == "Admin")
+                                            {
+                                                <a asp-action="Delete"
+                                                   asp-route-id="@bus.Id"
+                                                   class="action-btn delete-btn">
+
+                                                    <i class="bi bi-trash-fill"></i>
+
+                                                    <span>
+                                                        Delete
+                                                    </span>
+
+                                                </a>
+                                            }
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="5"
+                                    class="text-center py-5 text-muted">
+
+                                    <div class="empty-state">
+
+                                        <div class="empty-icon">
+
+                                            <i class="bi bi-bus-front-fill"></i>
+
+                                        </div>
+
+                                        <h5 class="fw-bold">
+                                            No Buses Available
+                                        </h5>
+
+                                        <p class="mb-0">
+                                            No buses are currently registered in the system.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+
+    body {
+        background: #fff7f1;
+    }
+
+    .bus-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+
+    .bus-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+
+    .btn-bus-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+        transition: .3s;
+    }
+
+
+        .btn-bus-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255,107,26,.35);
+        }
+
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+        height: 100%;
+    }
+
+
+    .stat-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 25px;
+    }
+
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+
+    .stat-card h2 {
+        margin: 3px 0 0;
+        font-weight: 700;
+    }
+
+
+    .bus-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+
+    .bus-list-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+
+    .search-box {
+        position: relative;
+        width: 320px;
+    }
+
+
+        .search-box i {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            color: #999;
+            z-index: 2;
+        }
+
+
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            min-height: 45px;
+        }
+
+
+            .search-box input:focus {
+                border-color: #ff9a5a;
+                box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+            }
+
+
+
+    .bus-table thead {
+        background: #fff8f4;
+    }
+
+
+    .bus-table th {
+        padding: 18px;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        border: none;
+    }
+
+
+    .bus-table td {
+        padding: 18px;
+        border-color: #f1f1f1;
+    }
+
+
+    .bus-table tbody tr {
+        transition: .25s;
+    }
+
+
+        .bus-table tbody tr:hover {
+            background: #fffaf7;
+        }
+
+
+
+
+    .bus-avatar {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        background: linear-gradient(135deg, #ff6b1a, #ff9a5a);
+        border-radius: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 22px;
+        box-shadow: 0 8px 18px rgba(255,107,26,.25);
+    }
+
+    .driver-text {
+        color: #555;
+        font-weight: 500;
+    }
+
+
+        .driver-text i {
+            color: #ff6b1a;
+            margin-right: 5px;
+        }
+
+
+    .worker-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 8px 13px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    .id-badge {
+        background: #f4f5f6;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #555;
+    }
+
+
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all .25s ease;
+        white-space: nowrap;
+    }
+
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+
+    .details-btn {
+        background: #eaf4ff;
+        color: #0d6efd;
+    }
+
+
+        .details-btn:hover {
+            background: #0d6efd;
+            color: white;
+            box-shadow: 0 8px 18px rgba(13,110,253,.20);
+        }
+
+
+    .edit-btn {
+        background: #fff2df;
+        color: #e98a00;
+    }
+
+
+        .edit-btn:hover {
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 8px 18px rgba(245,158,11,.20);
+        }
+
+
+    .delete-btn {
+        background: #ffebeb;
+        color: #dc3545;
+    }
+
+
+        .delete-btn:hover {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 8px 18px rgba(220,53,69,.20);
+        }
+
+
+    .empty-state {
+        padding: 30px;
+    }
+
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 32px;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto auto 20px;
+    }
+
+
+
+    @@media (max-width: 992px) {
+
+        .action-buttons {
+            justify-content: flex-start !important;
+        }
+    }
+
+
+    @@media (max-width: 768px) {
+
+        .bus-header,
+        .bus-list-top {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+
+        .search-box {
+            width: 100%;
+        }
+
+
+        .bus-header {
+            padding: 24px;
+        }
+
+
+        .action-btn {
+            padding: 8px 12px;
+        }
+    }
+
+
+    @@media (max-width: 576px) {
+
+        .bus-header h1 {
+            font-size: 28px;
+        }
+
+
+        .stat-card {
+            padding: 18px;
+        }
+
+
+        .bus-list-top {
+            padding: 20px !important;
+        }
+    }
+
+
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+@section Scripts {
+
+    <script>
+
+        document
+            .getElementById("busSearch")
+            .addEventListener("keyup", function() {
+
+                let value = this.value.trim().toLowerCase();
+
+                let rows = document.querySelectorAll(
+                    "#busTableBody tr"
+                );
+
+                rows.forEach(function(row) {
+
+                    let busIdCell =
+                        row.querySelector(".bus-id-cell");
+
+                    if (!busIdCell) {
+                        return;
+                    }
+
+                    let busId =
+                        busIdCell.getAttribute("data-bus-id").toLowerCase();
+
+                    row.style.display =
+                        busId.includes(value)
+                            ? ""
+                            : "none";
+
+                });
+
+            });
+
+    </script>
+
+}

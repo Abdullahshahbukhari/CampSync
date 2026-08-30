@@ -1,0 +1,262 @@
+﻿@model List<Frontend.DTOs.LeaveResponseModel>
+@{
+    ViewData["Title"] = "Pending Leaves"; var role = Context.Session.GetString("role") ?? "";
+}
+<div class="container-fluid py-4 leave-page">
+    <div class="leave-header mb-4"><div><span class="section-badge">@role</span><h1 class="mt-2 mb-1">Pending Leaves</h1><p class="text-muted mb-0">Only requests your role is authorized to manage are shown.</p></div><a asp-action="LeaveHub" class="btn btn-outline-secondary">Back</a></div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    <div class="leave-main-card">
+        @if (Model?.Any() == true)
+        {
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>#</th><th>User</th><th>Role</th><th>Camp</th><th>From</th><th>To</th><th>Reason</th><th class="text-end">Actions</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr><td><strong>#@item.Id</strong></td><td><strong>@item.UserName</strong></td><td>@item.Role</td><td>@(item.CampName ?? "—")</td><td>@item.FromDate.ToString("dd MMM yyyy")</td><td>@item.ToDate.ToString("dd MMM yyyy")</td><td>@item.Reason</td><td><div class="d-flex justify-content-end gap-2"><form asp-action="ApproveLeave" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@item.Id" /><button class="btn btn-sm approve-btn" onclick="return confirm('Approve leave request #@item.Id?')">Approve</button></form><form asp-action="RejectLeave" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@item.Id" /><button class="btn btn-sm reject-btn" onclick="return confirm('Reject leave request #@item.Id?')">Reject</button></form></div></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+
+            <div class="empty-state"><div class="empty-icon">✓</div><h4>No pending leave requests</h4><p>There are currently no requests waiting for your decision.</p></div>
+        }
+    </div>
+</div>
+<style>
+    .leave-page {
+        max-width: 1500px;
+        margin: auto
+    }
+
+    .leave-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 30px;
+        border-radius: 24px;
+        background: linear-gradient(135deg,#fff,#fff4ec);
+        box-shadow: 0 12px 40px rgba(0,0,0,.05)
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px
+    }
+
+    .leave-header h1 {
+        font-weight: 750
+    }
+
+    .leave-main-card {
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06)
+    }
+
+    table th {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #777;
+        background: #fff8f4;
+        border: 0;
+        padding: 16px
+    }
+
+    table td {
+        padding: 16px;
+        border-color: #f1f1f1
+    }
+
+    .approve-btn {
+        background: #eaf8ef;
+        color: #198754;
+        border: 0;
+        font-weight: 700
+    }
+
+    .reject-btn {
+        background: #ffebeb;
+        color: #dc3545;
+        border: 0;
+        font-weight: 700
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 70px 25px
+    }
+
+    .empty-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 18px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf8ef;
+        color: #198754;
+        font-size: 28px;
+        font-weight: 800
+    }
+
+    @@media (max-width:768px) {
+        .leave-header {
+            flex-direction: column;
+            align-items: flex-start
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+</style>

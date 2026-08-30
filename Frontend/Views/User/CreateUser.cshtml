@@ -1,0 +1,287 @@
+﻿@model Frontend.DTOs.CreateUserModel
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <div style="
+            color:#ff6b1a;
+            font-size:12px;
+            font-weight:800;
+            letter-spacing:1.5px;">
+            USER MANAGEMENT
+        </div>
+
+        <h1 style="
+            font-weight:800;
+            margin-top:5px;">
+            Create User
+        </h1>
+
+        <p class="text-muted">
+            Create an account for a Worker, Supervisor or Driver.
+        </p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    <div style="
+        background:white;
+        padding:30px;
+        border-radius:22px;
+        box-shadow:0 10px 30px rgba(0,0,0,.06);">
+
+        <form asp-action="CreateUser"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">
+                        Full Name
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Enter full name" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">
+                        Email
+                    </label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           class="form-control"
+                           placeholder="Enter email" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">
+                        Password
+                    </label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Enter password" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">
+                        Confirm Password
+                    </label>
+
+                    <input asp-for="ConfirmPassword"
+                           type="password"
+                           class="form-control"
+                           placeholder="Confirm password" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">
+                        Role
+                    </label>
+
+                    <select asp-for="Role"
+                            class="form-select">
+
+                        <option value="Worker">
+                            Worker
+                        </option>
+
+                        <option value="Supervisor">
+                            Supervisor
+                        </option>
+
+                        <option value="Driver">
+                            Driver
+                        </option>
+
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="mt-4 text-end">
+
+                <button type="submit"
+                        class="btn"
+                        style="
+                    background:#ff6b1a;
+                    color:white;
+                    border-radius:11px;
+                    padding:11px 25px;
+                    font-weight:700;">
+
+                    Create User
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+ 
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+   
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+</style>
+

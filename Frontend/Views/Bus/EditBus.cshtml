@@ -1,0 +1,542 @@
+﻿@model Frontend.DTOs.BusUpdateModel
+
+@{
+    ViewData["Title"] = "Edit Bus";
+
+    var busId = ViewBag.BusId;
+}
+
+<div class="container-fluid py-4">
+
+    <div class="page-header mb-4">
+
+        <div class="d-flex align-items-center gap-3">
+
+            <div class="header-icon">
+
+                <i class="bi bi-pencil-square"></i>
+
+            </div>
+
+
+            <div>
+
+                <span class="section-badge">
+                    BUS MANAGEMENT
+                </span>
+
+                <h1 class="mt-1 mb-1">
+
+                    Edit Bus
+
+                </h1>
+
+                <p class="text-muted mb-0">
+
+                    Update the bus number or assigned driver.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a asp-action="Busbyid"
+           asp-route-id="@busId"
+           class="btn btn-back">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Details
+
+        </a>
+
+    </div>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-xl-7">
+
+
+            <div class="form-card">
+
+
+                <div class="form-card-header">
+
+                    <div class="form-card-icon">
+
+                        <i class="bi bi-bus-front-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h4 class="mb-1">
+
+                            Update Bus Information
+
+                        </h4>
+
+                        <p class="text-muted mb-0">
+
+                            Modify the required information and save changes.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <hr />
+
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger border-0 rounded-4">
+
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+                        @ViewBag.Error
+
+                    </div>
+                }
+
+
+                <form asp-action="EditBus"
+                      asp-route-id="@busId"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+
+                    <div class="mb-4">
+
+                        <label asp-for="BusNo"
+                               class="form-label">
+
+                            <i class="bi bi-bus-front me-2"></i>
+
+                            Bus Number
+
+                        </label>
+
+
+                        <input asp-for="BusNo"
+                               type="number"
+                               class="form-control custom-input" />
+
+
+                        <span asp-validation-for="BusNo"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <!-- CAPACITY -->
+
+                    <div class="mb-4">
+                        <label asp-for="Capacity" class="form-label">
+                            <i class="bi bi-people-fill me-2"></i>
+                            Bus Capacity
+                        </label>
+                        <input asp-for="Capacity" type="number" min="1" class="form-control custom-input" />
+                        <span asp-validation-for="Capacity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label asp-for="DriverId"
+                               class="form-label">
+
+                            <i class="bi bi-person-badge me-2"></i>
+
+                            Assigned Driver
+
+                        </label>
+
+
+                        <select asp-for="DriverId"
+                                class="form-select custom-input">
+
+                            <option value="">
+                                -- Select Driver --
+                            </option>
+
+                            @if (ViewBag.Drivers != null)
+                            {
+                                foreach (var driver in ViewBag.Drivers)
+                                {
+                                    <option value="@driver.Id">
+
+                                        @driver.Name
+
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+
+                        <span asp-validation-for="DriverId"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                
+
+                    <div class="info-box mb-4">
+
+                        <div class="info-icon">
+
+                            <i class="bi bi-info-circle-fill"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Important
+                            </strong>
+
+                            <p class="mb-0">
+
+                                Make sure the selected user has the Driver role before saving changes.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                 
+                    <div class="d-flex justify-content-end gap-3 flex-wrap">
+
+
+                        <a asp-action="Busbyid"
+                           asp-route-id="@busId"
+                           class="btn btn-cancel">
+
+                            <i class="bi bi-x-circle"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-primary-custom">
+
+                            <i class="bi bi-check-circle"></i>
+
+                            Save Changes
+
+                        </button>
+
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg,#ffffff,#fff4ec);
+        padding: 30px;
+        border-radius: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .header-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg,#ff6b1a,#ff9a5a);
+        color: white;
+        font-size: 28px;
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .btn-back {
+        background: white;
+        border: 1px solid #f0d8c9;
+        border-radius: 14px;
+        padding: 11px 18px;
+        font-weight: 600;
+    }
+
+    .form-card {
+        background: white;
+        padding: 35px;
+        border-radius: 24px;
+        box-shadow: 0 15px 45px rgba(0,0,0,.06);
+    }
+
+    .form-card-header {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .form-card-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+        .form-label i {
+            color: #ff6b1a;
+        }
+
+    .custom-input {
+        min-height: 50px;
+        border-radius: 14px;
+        border: 1px solid #eee;
+        padding: 12px 15px;
+    }
+
+        .custom-input:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+    .info-box {
+        display: flex;
+        gap: 14px;
+        padding: 18px;
+        background: #fff8f3;
+        border-left: 4px solid #ff6b1a;
+        border-radius: 14px;
+    }
+
+    .info-icon {
+        color: #ff6b1a;
+        font-size: 20px;
+    }
+
+    .info-box p {
+        font-size: 14px;
+        color: #777;
+        margin-top: 4px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg,#ff6b1a,#ff944d);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+        .btn-primary-custom:hover {
+            color: white;
+        }
+
+    .btn-cancel {
+        background: #f5f5f5;
+        color: #666;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+    @@media(max-width:768px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .form-card {
+            padding: 22px;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    2@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+        /* Keep horizontal action groups usable without forcing
+               the page wider than the viewport. */
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

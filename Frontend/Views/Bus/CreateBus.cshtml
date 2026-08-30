@@ -1,0 +1,539 @@
+﻿@model Frontend.DTOs.BusCreateModel
+
+@{
+    ViewData["Title"] = "Create Bus";
+}
+
+<div class="container-fluid py-4">
+
+
+
+    <div class="page-header mb-4">
+
+        <div class="d-flex align-items-center gap-3">
+
+            <div class="header-icon">
+                <i class="bi bi-bus-front-fill"></i>
+            </div>
+
+            <div>
+
+                <span class="section-badge">
+                    BUS MANAGEMENT
+                </span>
+
+                <h1 class="mt-1 mb-1">
+                    Create New Bus
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Add a new bus and assign a registered driver.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a asp-action="BusList"
+           class="btn btn-back">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Buses
+
+        </a>
+
+    </div>
+
+
+  
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="form-card">
+
+                <div class="form-card-header">
+
+                    <div class="form-card-icon">
+
+                        <i class="bi bi-bus-front-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h4 class="mb-1">
+                            Bus Information
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Enter the details below to register a new bus.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <hr />
+
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger border-0 rounded-4">
+
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                        @ViewBag.Error
+
+                    </div>
+                }
+
+
+                <form asp-action="CreateBus"
+                      method="post">
+
+
+                    @Html.AntiForgeryToken()
+
+
+                    <div class="mb-4">
+
+                        <label asp-for="BusNo"
+                               class="form-label">
+
+                            <i class="bi bi-bus-front me-2"></i>
+
+                            Bus Number
+
+                        </label>
+
+
+                        <input asp-for="BusNo"
+                               type="number"
+                               class="form-control custom-input"
+                               placeholder="Enter bus number" />
+
+
+                        <span asp-validation-for="BusNo"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <div class="mb-4">
+                        <label asp-for="Capacity" class="form-label">
+                            <i class="bi bi-people-fill me-2"></i>
+                            Bus Capacity
+                        </label>
+                        <input asp-for="Capacity" type="number" min="1" class="form-control custom-input" placeholder="Enter passenger capacity" />
+                        <span asp-validation-for="Capacity" class="text-danger small"></span>
+                    </div>
+
+
+                 
+
+                    <div class="mb-4">
+
+                        <label asp-for="DriverId"
+                               class="form-label">
+
+                            <i class="bi bi-person-badge me-2"></i>
+
+                            Select Driver
+
+                        </label>
+
+
+                        <select asp-for="DriverId"
+                                class="form-select custom-input">
+
+                            <option value="">
+                                -- Select Driver --
+                            </option>
+
+                            @if (ViewBag.Drivers != null)
+                            {
+                                foreach (var driver in ViewBag.Drivers)
+                                {
+                                    <option value="@driver.Id">
+
+                                        @driver.Name
+
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+
+                        <span asp-validation-for="DriverId"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="info-box mb-4">
+
+                        <div class="info-icon">
+
+                            <i class="bi bi-info-circle-fill"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Driver Assignment
+                            </strong>
+
+                            <p class="mb-0">
+                                Only users registered with the Driver role can be assigned to a bus.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 flex-wrap">
+
+                        <a asp-action="BusList"
+                           class="btn btn-cancel">
+
+                            <i class="bi bi-x-circle"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-primary-custom">
+
+                            <i class="bi bi-plus-circle"></i>
+
+                            Create Bus
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 30px;
+        border-radius: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .header-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg,#ff6b1a,#ff9a5a);
+        color: white;
+        font-size: 28px;
+        box-shadow: 0 10px 25px rgba(255,107,26,.25);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .page-header h1 {
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-back {
+        border: 1px solid #f0d8c9;
+        background: white;
+        border-radius: 14px;
+        padding: 11px 18px;
+        color: #555;
+        font-weight: 600;
+    }
+
+        .btn-back:hover {
+            background: #fff0e7;
+            color: #ff6b1a;
+        }
+
+    .form-card {
+        background: white;
+        padding: 35px;
+        border-radius: 24px;
+        box-shadow: 0 15px 45px rgba(0,0,0,.06);
+    }
+
+    .form-card-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .form-card-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #444;
+    }
+
+        .form-label i {
+            color: #ff6b1a;
+        }
+
+    .custom-input {
+        border-radius: 14px;
+        min-height: 50px;
+        border: 1px solid #eee;
+        padding: 12px 15px;
+    }
+
+        .custom-input:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+    .info-box {
+        background: #fff8f3;
+        border-left: 4px solid #ff6b1a;
+        padding: 18px;
+        border-radius: 14px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+    }
+
+        .info-box p {
+            color: #777;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+    .info-icon {
+        color: #ff6b1a;
+        font-size: 20px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg,#ff6b1a,#ff944d);
+        border: none;
+        color: white;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 20px rgba(255,107,26,.25);
+    }
+
+        .btn-primary-custom:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-cancel {
+        background: #f5f5f5;
+        color: #666;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+    @@media(max-width:768px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .form-card {
+            padding: 22px;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

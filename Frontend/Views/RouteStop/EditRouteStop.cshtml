@@ -1,0 +1,494 @@
+﻿@model Frontend.DTOs.RouteStopResponseModel
+
+@{
+    ViewData["Title"] = "Edit Route Stop";
+    var currentRole = Context.Session.GetString("role") ?? "";
+    var canEdit = currentRole == "Admin" || currentRole == "Supervisor";
+}
+
+<div class="container-fluid py-4">
+
+    @if (!canEdit)
+    {
+        <div class="alert alert-danger shadow-sm border-0">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            You are not authorized to edit route stops.
+        </div>
+        <a asp-action="RouteStopList" class="btn btn-route-outline">
+            <i class="bi bi-arrow-left"></i> Back to Route Stops
+        </a>
+        return;
+    }
+
+
+    <div class="route-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                ROUTE MANAGEMENT
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                Edit Route Stop
+            </h1>
+
+            <p class="text-muted mb-0">
+                Update the route stop information.
+            </p>
+
+        </div>
+
+        <a asp-action="RouteStopList"
+           class="btn btn-route-outline mt-3 mt-md-0">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Route Stops
+
+        </a>
+
+    </div>
+
+
+    <div class="card route-main-card border-0">
+
+        <div class="card-body p-0">
+
+            <div class="route-form-top p-4">
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Update Stop
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Modify the stop name or sequence order.
+                    </p>
+
+                </div>
+
+                <div class="route-id-box">
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                    Stop ID: #@Model.Id
+
+                </div>
+
+            </div>
+
+
+            <form asp-action="UpdateRouteStop"
+                  asp-route-id="@Model.Id"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div class="p-4">
+
+                    <div class="row g-4">
+
+
+                        <div class="col-md-6">
+
+                            <div class="form-group-custom">
+
+                                <label>
+
+                                    <i class="bi bi-geo-alt-fill"></i>
+
+                                    Stop Name
+
+                                </label>
+
+                                <input type="text"
+                                       name="StopName"
+                                       class="form-control custom-input"
+                                       value="@Model.StopName"
+                                       required />
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="form-group-custom">
+
+                                <label>
+
+                                    <i class="bi bi-list-ol"></i>
+
+                                    Sequence Order
+
+                                </label>
+
+                                <input type="number"
+                                       name="SeqOrder"
+                                       class="form-control custom-input"
+                                       value="@Model.SeqOrder"
+                                       min="1"
+                                       required />
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="route-info-box mt-4">
+
+                        <div class="info-icon">
+
+                            <i class="bi bi-bus-front-fill"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Assigned Bus
+                            </strong>
+
+                            <p class="mb-0">
+
+                                Bus Number: @Model.BusNo
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions mt-5 pt-4">
+
+                        <a asp-action="RouteStopList"
+                           class="btn btn-route-cancel">
+
+                            <i class="bi bi-x-lg"></i>
+
+                            Cancel
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-route-primary">
+
+                            <i class="bi bi-check-lg"></i>
+
+                            Update Route Stop
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .route-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .route-header h1 {
+        font-weight: 700;
+    }
+
+    .btn-route-primary {
+        background: linear-gradient(135deg, #ff6b1a, #ff944d);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+        .btn-route-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-route-outline {
+        background: white;
+        color: #ff6b1a;
+        border: 1px solid #ffd5bd;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+    .btn-route-cancel {
+        background: #f4f5f6;
+        color: #555;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+    .route-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+    .route-form-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff8f4;
+        border-bottom: 1px solid #f3ebe6;
+    }
+
+    .route-id-box {
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .form-group-custom {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .form-group-custom label {
+            font-weight: 600;
+            color: #555;
+        }
+
+            .form-group-custom label i {
+                color: #ff6b1a;
+                margin-right: 5px;
+            }
+
+    .custom-input {
+        min-height: 48px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        padding: 10px 14px;
+    }
+
+        .custom-input:focus {
+            border-color: #ff9a5a;
+            box-shadow: 0 0 0 .2rem rgba(255,107,26,.10);
+        }
+
+    .route-info-box {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 20px;
+        border-radius: 18px;
+        background: #fffaf7;
+    }
+
+    .info-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 14px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        border-top: 1px solid #f1f1f1;
+    }
+
+    @@media (max-width: 768px) {
+
+        .route-header,
+        .route-form-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+            .form-actions a,
+            .form-actions button {
+                width: 100%;
+            }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

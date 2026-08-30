@@ -1,0 +1,845 @@
+﻿@model Frontend.DTOs.RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="register-page">
+
+    <div class="register-card">
+
+
+        <div class="register-left">
+
+            <div class="register-icon">
+                <i class="bi bi-buildings-fill"></i>
+            </div>
+
+            <div class="register-label">
+                INITIAL SYSTEM SETUP
+            </div>
+
+            <h1>
+                Create Your
+                <br />
+                Administrator Account
+            </h1>
+
+            <p>
+                Create the first CampSync administrator account
+                to start managing your workforce, camps and
+                transportation.
+            </p>
+
+
+            <div class="feature">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    Manage Camps & Rooms
+                </span>
+
+            </div>
+
+
+            <div class="feature">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    Manage Workers & Attendance
+                </span>
+
+            </div>
+
+
+            <div class="feature">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span>
+                    Manage Buses & Routes
+                </span>
+
+            </div>
+
+
+            <div class="admin-note">
+
+                <i class="bi bi-shield-check"></i>
+
+                <span>
+                    This page is only available for
+                    the initial system setup.
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="register-right">
+
+            <div class="register-heading">
+
+                <div class="eyebrow">
+                    FIRST TIME SETUP
+                </div>
+
+                <h2>
+                    Create Administrator
+                </h2>
+
+                <p>
+                    Set up the first CampSync administrator account.
+                </p>
+
+            </div>
+
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="register-error">
+
+                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                    <span>
+                        @ViewBag.Error
+                    </span>
+
+                    <button type="button"
+                            onclick="this.parentElement.remove()">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </button>
+
+                </div>
+            }
+
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="register-error">
+
+                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                    <span>
+                        @TempData["Error"]
+                    </span>
+
+                    <button type="button"
+                            onclick="this.parentElement.remove()">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </button>
+
+                </div>
+            }
+
+
+
+            <div asp-validation-summary="ModelOnly"
+                 class="register-error validation-summary">
+            </div>
+
+
+            <form asp-controller="Auth"
+                  asp-action="Register"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+
+                <div class="form-group">
+
+                    <label asp-for="Name">
+                        Full Name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-person-fill"></i>
+
+                        <input asp-for="Name"
+                               placeholder="Enter your full name"
+                               autocomplete="name" />
+
+                    </div>
+
+                    <span asp-validation-for="Name"
+                          class="field-error">
+                    </span>
+
+                </div>
+
+
+              
+
+                <div class="form-group">
+
+                    <label asp-for="Email">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-envelope-fill"></i>
+
+                        <input asp-for="Email"
+                               type="email"
+                               placeholder="Enter your email"
+                               autocomplete="email" />
+
+                    </div>
+
+                    <span asp-validation-for="Email"
+                          class="field-error">
+                    </span>
+
+                </div>
+
+
+             
+
+                <div class="form-group">
+
+                    <label>
+                        Account Type
+                    </label>
+
+                    <div class="account-type">
+
+                        <div class="account-type-icon">
+
+                            <i class="bi bi-shield-fill-check"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Administrator
+                            </strong>
+
+                            <small>
+                                Initial system administrator
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="account-info">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        The first registered account is
+                        automatically assigned the Admin role.
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label asp-for="Password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-lock-fill"></i>
+
+                        <input asp-for="Password"
+                               type="password"
+                               placeholder="Enter your password"
+                               autocomplete="new-password" />
+
+                    </div>
+
+                    <span asp-validation-for="Password"
+                          class="field-error">
+                    </span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="ConfirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-shield-lock-fill"></i>
+
+                        <input asp-for="ConfirmPassword"
+                               type="password"
+                               placeholder="Confirm your password"
+                               autocomplete="new-password" />
+
+                    </div>
+
+                    <span asp-validation-for="ConfirmPassword"
+                          class="field-error">
+                    </span>
+
+                </div>
+
+
+
+                <button type="submit"
+                        class="register-button">
+
+                    <i class="bi bi-person-plus-fill"></i>
+
+                    Create Administrator Account
+
+                </button>
+
+            </form>
+
+
+           
+
+            <div class="login-link">
+
+                Already have an account?
+
+                <a asp-controller="Auth"
+                   asp-action="Login">
+
+                    Sign In
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+
+    .register-page {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 25px 20px;
+    }
+
+
+    .register-card {
+        width: 100%;
+        max-width: 920px;
+        display: grid;
+        grid-template-columns: 1fr 1.05fr;
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 55px rgba(0,0,0,.08);
+    }
+
+
+  
+
+    .register-left {
+        padding: 48px 38px;
+        background: linear-gradient( 145deg, #ff6b1a, #ff8840 );
+        color: #fff;
+    }
+
+
+    .register-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 28px;
+    }
+
+
+    .register-label {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        margin-bottom: 10px;
+    }
+
+
+    .register-left h1 {
+        font-size: 31px;
+        line-height: 1.12;
+        font-weight: 850;
+        margin-bottom: 18px;
+    }
+
+
+    .register-left p {
+        font-size: 13px;
+        line-height: 1.7;
+        color: rgba(255,255,255,.9);
+        margin-bottom: 27px;
+    }
+
+
+    .feature {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 14px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+        .feature i {
+            font-size: 15px;
+        }
+
+
+    .admin-note {
+        margin-top: 32px;
+        padding: 13px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.13);
+        display: flex;
+        gap: 9px;
+        font-size: 11px;
+        line-height: 1.5;
+        color: rgba(255,255,255,.9);
+    }
+
+
+  
+
+    .register-right {
+        padding: 36px 30px;
+    }
+
+
+    .eyebrow {
+        color: #ff6b1a;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        margin-bottom: 6px;
+    }
+
+
+    .register-heading h2 {
+        font-size: 23px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+
+    .register-heading p {
+        color: #888;
+        font-size: 12px;
+        margin-bottom: 19px;
+    }
+
+
+
+    .register-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        background: #f8d7da;
+        color: #842029;
+        border: 1px solid #f1bfc4;
+        border-radius: 8px;
+        padding: 11px 12px;
+        margin-bottom: 15px;
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
+
+        .register-error > i {
+            margin-top: 1px;
+        }
+
+
+        .register-error span {
+            flex: 1;
+        }
+
+
+        .register-error button {
+            border: 0;
+            background: transparent;
+            color: #842029;
+            padding: 0;
+            cursor: pointer;
+        }
+
+
+    .validation-summary:empty {
+        display: none;
+    }
+
+
+
+    .form-group {
+        margin-bottom: 13px;
+    }
+
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+
+    .input-wrapper {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        border: 1px solid #eadfd8;
+        border-radius: 9px;
+        overflow: hidden;
+        background: #fff;
+        transition: .2s;
+    }
+
+
+        .input-wrapper:focus-within {
+            border-color: #ff6b1a;
+            box-shadow: 0 0 0 3px rgba(255,107,26,.10);
+        }
+
+
+        .input-wrapper > i {
+            width: 36px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff8f3;
+            color: #ff6b1a;
+            font-size: 13px;
+        }
+
+
+        .input-wrapper input {
+            flex: 1;
+            height: 100%;
+            border: 0;
+            outline: 0;
+            padding: 0 10px;
+            font-size: 12px;
+            color: #333;
+        }
+
+
+            .input-wrapper input::placeholder {
+                color: #aaa;
+            }
+
+
+    .field-error {
+        display: block;
+        color: #dc3545;
+        font-size: 10px;
+        margin-top: 4px;
+    }
+
+
+
+    .account-type {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 8px 11px;
+        border: 1px solid #f2d8c8;
+        background: #fff8f3;
+        border-radius: 9px;
+    }
+
+
+    .account-type-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #fff0e7;
+        color: #ff6b1a;
+    }
+
+
+    .account-type strong {
+        display: block;
+        color: #444;
+        font-size: 12px;
+    }
+
+
+    .account-type small {
+        display: block;
+        color: #999;
+        font-size: 10px;
+        margin-top: 2px;
+    }
+
+
+    .account-info {
+        display: flex;
+        gap: 5px;
+        margin-top: 5px;
+        color: #999;
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+
+        .account-info i {
+            color: #ff6b1a;
+            margin-top: 1px;
+        }
+
+
+
+    .register-button {
+        width: 100%;
+        height: 42px;
+        border: 0;
+        border-radius: 9px;
+        background: linear-gradient( 135deg, #ff6b1a, #ff944d );
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        box-shadow: 0 7px 18px rgba(255,107,26,.20);
+        transition: .2s;
+        margin-top: 4px;
+    }
+
+
+        .register-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(255,107,26,.28);
+        }
+
+
+
+    .login-link {
+        text-align: center;
+        color: #888;
+        font-size: 11px;
+        margin-top: 15px;
+    }
+
+
+        .login-link a {
+            color: #ff6b1a;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+
+            .login-link a:hover {
+                text-decoration: underline;
+            }
+
+
+
+    @@media (max-width: 768px) {
+
+        .register-card {
+            grid-template-columns: 1fr;
+        }
+
+
+        .register-left {
+            padding: 30px;
+        }
+
+
+            .register-left h1 {
+                font-size: 27px;
+            }
+
+
+        .register-right {
+            padding: 30px 25px;
+        }
+    }
+
+
+
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+   
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

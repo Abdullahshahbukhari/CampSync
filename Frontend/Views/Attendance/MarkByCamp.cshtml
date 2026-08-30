@@ -1,0 +1,373 @@
+﻿@model List<Frontend.DTOs.WorkerResponseModel>
+@{
+    ViewData["Title"] = "Mark Attendance";
+    var camps = ViewBag.Camps as List<Frontend.DTOs.CampResponseModel>;
+    int? selectedCampId = ViewBag.SelectedCampId;
+    DateOnly selectedDate = ViewBag.SelectedDate;
+}
+
+<div class="container-fluid py-4">
+
+    <div class="room-header mb-4">
+        <div>
+            <span class="section-badge">ATTENDANCE</span>
+            <h1 class="mt-2 mb-1">Mark Attendance</h1>
+            <p class="text-muted mb-0">Select a camp and date, then mark each worker.</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null || ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>@(TempData["Error"] ?? ViewBag.Error)
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card camp-select-card border-0 mb-4">
+        <div class="card-body p-4">
+            <form method="get" asp-action="MarkByCamp" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label custom-label">Select Camp</label>
+                    <select name="campId" class="form-select">
+                        <option value="">-- Select a Camp --</option>
+                        @if (camps != null)
+                        {
+                            foreach (var c in camps)
+                            {
+                                <option value="@c.Id" selected="@(c.Id == selectedCampId)">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label custom-label">Date</label>
+                    <input type="date" name="atDate" class="form-control"
+                           value="@selectedDate.ToString("yyyy-MM-dd")"
+                           max="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-room-primary w-100">Load Workers</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (selectedCampId != null)
+    {
+        @if (Model != null && Model.Any())
+        {
+            <form asp-action="MarkByCamp" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="campId" value="@selectedCampId" />
+                <input type="hidden" name="atDate" value="@selectedDate.ToString("yyyy-MM-dd")" />
+
+                <div class="card room-main-card border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 room-table">
+                                <thead>
+                                    <tr>
+                                        <th>Worker</th>
+                                        <th>Trade</th>
+                                        <th>Nationality</th>
+                                        <th style="width:220px">Status (@selectedDate.ToString("dd MMM yyyy"))</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var w in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="room-avatar"><i class="bi bi-person-fill"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold">@w.Name</h6>
+                                                        <small class="text-muted">Iqama: @w.IqamaNo</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@w.Trade</td>
+                                            <td>@w.Nationality</td>
+                                            <td>
+                                                <select name="statuses[@w.Id]" class="form-select status-select">
+                                                    <option value="Skip" selected>-- Skip --</option>
+                                                    <option value="Present">Present</option>
+                                                    <option value="Absent">Absent</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-outline-success" onclick="markAll('Present')">
+                        <i class="bi bi-check2-all"></i> Mark All Present
+                    </button>
+                    <button type="submit" class="btn btn-room-primary">
+                        <i class="bi bi-save"></i> Submit Attendance
+                    </button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="card room-main-card border-0">
+                <div class="card-body text-center py-5 text-muted">
+                    <i class="bi bi-info-circle me-2"></i>
+                    No workers found for this camp.
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+<style>
+    body {
+        background: #fff7f1;
+    }
+
+    .room-header {
+        background: linear-gradient(135deg,#ffffff,#fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .btn-room-primary {
+        background: linear-gradient(135deg,#ff6b1a,#ff944d);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 14px;
+        font-weight: 600;
+    }
+
+        .btn-room-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .camp-select-card {
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    }
+
+    .custom-label {
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .room-main-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+    .room-table thead {
+        background: #fff8f4;
+    }
+
+    .room-table th {
+        padding: 16px;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        border: none;
+    }
+
+    .room-table td {
+        padding: 16px;
+        border-color: #f1f1f1;
+    }
+
+    .room-avatar {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        background: linear-gradient(135deg,#ff6b1a,#ff9a5a);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+    }
+
+    .status-select {
+        border-radius: 10px;
+        border: 1px solid #eee;
+    }
+
+
+
+  
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+   
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+      
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
+
+@section Scripts {
+    <script>
+        function markAll(status) {
+            document.querySelectorAll('.status-select').forEach(function(sel) {
+                sel.value = status;
+            });
+        }
+    </script>
+}

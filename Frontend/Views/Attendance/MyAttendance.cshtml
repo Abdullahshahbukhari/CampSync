@@ -1,0 +1,516 @@
+﻿@model List<Frontend.DTOs.AttendanceResponseModel>
+
+@{
+    ViewData["Title"] = "My Attendance";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="attendance-header mb-4">
+
+        <div>
+
+            <span class="section-badge">
+                MY ATTENDANCE
+            </span>
+
+            <h1 class="mt-2 mb-1">
+                My Attendance
+            </h1>
+
+            <p class="text-muted mb-0">
+                View your complete attendance history.
+            </p>
+
+        </div>
+
+        <div class="attendance-total">
+
+            <i class="bi bi-calendar-check"></i>
+
+            <div>
+
+                <span>
+                    Total Records
+                </span>
+
+                <strong>
+                    @Model.Count
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="card attendance-table-card border-0">
+
+        <div class="card-body p-0">
+
+
+            @if (Model != null && Model.Any())
+            {
+
+                <div class="table-responsive">
+
+                    <table class="table attendance-table mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    #
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Marked By
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+
+                                    <td>
+
+                                        <span class="record-id">
+
+                                            #@item.Id
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="date-box">
+
+                                            <i class="bi bi-calendar3"></i>
+
+                                            @item.AtDate.ToString("dd MMM yyyy")
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @if (item.Status == "Present")
+                                        {
+                                            <span class="status present">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+
+                                                Present
+
+                                            </span>
+                                        }
+
+                                        else if (item.Status == "Absent")
+                                        {
+                                            <span class="status absent">
+
+                                                <i class="bi bi-x-circle-fill"></i>
+
+                                                Absent
+
+                                            </span>
+                                        }
+
+                                        else
+                                        {
+                                            <span class="status leave">
+
+                                                <i class="bi bi-calendar-check-fill"></i>
+
+                                                Leave
+
+                                            </span>
+                                        }
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="marked-by">
+
+                                            <div class="user-avatar">
+
+                                                <i class="bi bi-person-fill"></i>
+
+                                            </div>
+
+                                            @item.MarkedBy
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            }
+
+            else
+            {
+
+                <div class="empty-attendance">
+
+                    <div class="empty-icon">
+
+                        <i class="bi bi-calendar-x"></i>
+
+                    </div>
+
+                    <h4>
+                        No Attendance Records
+                    </h4>
+
+                    <p>
+
+                        Your attendance records will appear here.
+
+                    </p>
+
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background: #fff7f1;
+    }
+
+    .attendance-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg,#ffffff,#fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        color: #ff6b1a;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .attendance-header h1 {
+        font-weight: 700;
+    }
+
+    .attendance-total {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        background: white;
+        border-radius: 16px;
+    }
+
+        .attendance-total i {
+            font-size: 25px;
+            color: #ff6b1a;
+        }
+
+        .attendance-total span {
+            display: block;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .attendance-total strong {
+            font-size: 20px;
+        }
+
+    .attendance-table-card {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+    }
+
+    .attendance-table thead {
+        background: #fff4ec;
+    }
+
+    .attendance-table th {
+        padding: 20px;
+        color: #555;
+        font-weight: 600;
+        border: none;
+    }
+
+    .attendance-table td {
+        padding: 20px;
+        vertical-align: middle;
+        border-color: #f2f2f2;
+    }
+
+    .record-id {
+        background: #fff0e7;
+        color: #ff6b1a;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .date-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+        .date-box i {
+            color: #ff6b1a;
+        }
+
+    .status {
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .present {
+        background: #e8f7ee;
+        color: #198754;
+    }
+
+    .absent {
+        background: #fff0f0;
+        color: #dc3545;
+    }
+
+    .leave {
+        background: #fff7df;
+        color: #b58100;
+    }
+
+    .marked-by {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 12px;
+    }
+
+    .empty-attendance {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .empty-icon {
+        width: 75px;
+        height: 75px;
+        margin: auto auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0e7;
+        color: #ff6b1a;
+        border-radius: 22px;
+        font-size: 32px;
+    }
+
+    @@media(max-width:768px) {
+
+        .attendance-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+    }
+
+
+
+
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+   
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+   
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>

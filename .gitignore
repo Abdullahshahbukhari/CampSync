@@ -1,0 +1,9 @@
+.vs/ 
+**/bin/ 
+**/obj/ 
+CampSync.slnLaunch.user 
+**/appsettings.json 
+**/appsettings.Development.json 
+**/DataProtection-Keys/ 
+**/*.csproj.user 
+**/*.http 

@@ -1,0 +1,457 @@
+﻿@model Frontend.Controllers.ReportDashboardViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+@if (User.Identity?.IsAuthenticated != true || !User.IsInRole("Admin"))
+{
+    <div class="container-fluid py-4">
+        <div class="alert report-alert-danger border-0 shadow-sm rounded-4">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            You are not authorized to view reports.
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid py-4">
+        <div class="report-header mb-4">
+            <div>
+                <span class="section-badge">ADMIN REPORTS</span>
+                <h1 class="mt-2 mb-1">Reports Dashboard</h1>
+                <p class="text-muted mb-0">A clear overview of attendance, occupancy, buses and leave activity.</p>
+            </div>
+            <div class="report-header-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert report-alert-warning border-0 shadow-sm rounded-4 mb-4">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>@ViewBag.Error
+            </div>
+        }
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                    <div><span class="stat-label">Total Workers</span><h2>@Model.Summary.TotalWorker</h2></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-buildings-fill"></i></div>
+                    <div><span class="stat-label">Total Camps</span><h2>@Model.Summary.TotalCampuses</h2></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-bus-front-fill"></i></div>
+                    <div><span class="stat-label">Total Buses</span><h2>@Model.Summary.TotalBuses</h2></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-calendar-check-fill"></i></div>
+                    <div><span class="stat-label">Today's Attendance</span><h2>@Model.Summary.TodayAttendancePercentage%</h2></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header"><div><h4>Attendance by Camp</h4><p>Attendance percentage for each camp.</p></div><i class="bi bi-person-check-fill"></i></div>
+                    @if (Model.AttendanceByCamp?.Any() == true)
+                    {
+                        foreach (var x in Model.AttendanceByCamp)
+                        {
+                            <div class="metric-row"><span>@x.CampName</span><strong>@x.Percentage%</strong></div>
+                        }
+                    }
+                    else
+                    {
+
+                        <div class="empty-state">No attendance data available.</div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header"><div><h4>Bed Occupancy</h4><p>Current occupancy across camps.</p></div><i class="bi bi-house-door-fill"></i></div>
+                    @if (Model.BedOccupancy?.Any() == true)
+                    {
+                        foreach (var x in Model.BedOccupancy)
+                        {
+                            <div class="metric-row"><span>@x.CampName</span><strong>@x.Percentage%</strong></div>
+                        }
+                    }
+                    else
+                    {
+
+                        <div class="empty-state">No occupancy data available.</div>
+                    }
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="report-card">
+                    <div class="report-card-header"><div><h4>Bus Utilization</h4><p>Assigned workers compared with each bus capacity.</p></div><i class="bi bi-bus-front-fill"></i></div>
+                    <div class="table-responsive">
+                        <table class="table report-table align-middle mb-0">
+                            <thead><tr><th>Bus</th><th>Capacity</th><th>Workers</th><th>Utilization</th></tr></thead>
+                            <tbody>
+                                @if (Model.BusUtilization?.Any() == true)
+                                {
+                                    foreach (var x in Model.BusUtilization)
+                                    {
+                                        <tr><td><span class="id-badge">#@x.BusNo</span></td><td>@x.Capacity</td><td>@x.Assignedworker</td><td><strong class="percentage-text">@x.UtilizationRate%</strong></td></tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="4" class="text-center py-4 text-muted">No bus utilization data available.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="report-card">
+                    <div class="report-card-header"><div><h4>Leave Trends</h4><p>Monthly leave activity.</p></div><i class="bi bi-calendar2-week-fill"></i></div>
+                    @if (Model.LeaveTrends?.Any() == true)
+                    {
+                        foreach (var x in Model.LeaveTrends)
+                        {
+                            <div class="metric-row"><span>@x.Month</span><strong>@x.TotalLeaves</strong></div>
+                        }
+                    }
+                    else
+                    {
+
+                        <div class="empty-state">No leave data available.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    body {
+        background: #fff7f1;
+    }
+
+    .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg,#fff,#fff4ec);
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.05);
+    }
+
+    .section-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ff6b1a;
+    }
+
+    .report-header h1 {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .report-header-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+        height: 100%;
+    }
+
+    .stat-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 18px;
+        background: #fff0e7;
+        color: #ff6b1a;
+        font-size: 25px;
+        flex-shrink: 0;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .stat-card h2 {
+        margin: 3px 0 0;
+        font-weight: 700;
+    }
+
+    .report-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 15px 40px rgba(0,0,0,.06);
+        height: 100%;
+    }
+
+    .report-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 18px;
+    }
+
+        .report-card-header h4 {
+            margin: 0 0 4px;
+            font-weight: 700;
+        }
+
+        .report-card-header p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .report-card-header > i {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: #fff0e7;
+            color: #ff6b1a;
+            font-size: 20px;
+        }
+
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 13px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+        .metric-row:last-child {
+            border-bottom: 0;
+        }
+
+        .metric-row strong, .percentage-text {
+            color: #ff6b1a;
+        }
+
+    .report-table thead {
+        background: #fff8f4;
+    }
+
+    .report-table th {
+        padding: 15px;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        border: 0;
+    }
+
+    .report-table td {
+        padding: 15px;
+        border-color: #f1f1f1;
+    }
+
+    .id-badge {
+        background: #f4f5f6;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .empty-state {
+        padding: 18px 0;
+        color: #6c757d;
+        text-align: center;
+    }
+
+    .report-alert-danger {
+        background: #ffebeb;
+        color: #dc3545;
+    }
+
+    .report-alert-warning {
+        background: #fff4df;
+        color: #a65f00;
+    }
+
+    @@media (max-width:768px) {
+        .report-header {
+            padding: 24px;
+        }
+
+        .report-header-icon {
+            display: none;
+        }
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100%;
+    }
+
+    .card,
+    .shadow-sm,
+    .shadow {
+        max-width: 100%;
+    }
+
+    .form-control,
+    .form-select,
+    textarea,
+    input {
+        max-width: 100%;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive > .table {
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .table:not(.table-responsive .table) {
+            min-width: 680px;
+        }
+
+        .table-responsive {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .display-1,
+        .display-2,
+        .display-3,
+        .display-4 {
+            font-size: calc(1.5rem + 2vw);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        .card-body {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+            .input-group .form-control,
+            .input-group .form-select {
+                min-width: 0;
+            }
+
+        .d-flex.gap-3 {
+            gap: .75rem !important;
+        }
+
+        .btn {
+            min-height: 44px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .container,
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+       
+        .d-flex.flex-row {
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            overflow-wrap: anywhere;
+        }
+
+        .modal-dialog {
+            margin: .5rem;
+        }
+    }
+
+</style>
