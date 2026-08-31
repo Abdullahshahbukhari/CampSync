@@ -1,102 +1,436 @@
-# CampSync
+# 🏕️ CampSync
 
-> A full-stack camp management system for managing workforce, accommodation, attendance, transportation, leave workflows, and operational reporting through a centralized web platform.
+A full-stack **Camp Management and Workforce Administration System** built with **ASP.NET Core Web API, ASP.NET Core MVC, Entity Framework Core, and SQL Server**.
 
-## Overview
+CampSync provides a centralized platform for managing **camps, workers, supervisors, attendance, rooms, beds, buses, routes, leave requests, and operational reports** through a secure role-based architecture.
 
-CampSync is a full-stack management application designed to centralize and simplify day-to-day camp operations. The system provides separate backend API and frontend MVC applications with role-based access control and a relational SQL Server database.
+---
 
-The application covers core operational areas including camp management, worker and supervisor management, attendance tracking, accommodation management, leave workflows, bus management, route-stop management, and reporting.
+## 📸 Application Screenshots
 
-## Key Features
+## 🔐 Authentication & Access Control
 
-### Authentication & Authorization
-- User registration and login
-- JWT-based authentication
-- Role-based access control
-- Protected application modules and endpoints
-- Access-denied handling for unauthorized users
-- User profile management
+<p align="center">
+  <img src="Screenshots/Authentication/Register.JPG" width="420"/>
+  <img src="Screenshots/Authentication/Login.JPG" width="420"/>
+</p>
 
-### Camp Management
-- Create, view, update, and delete camps
-- View camp-specific information
-- Manage camp-related resources
+### 🔒 Controlled Registration
+
+One of the key security features of CampSync is its **controlled registration model**.
+
+- Only an **Admin** can register through the public registration process.
+- The system allows **only one Admin account** to be registered.
+- Other roles such as **Supervisor, Worker, and Driver cannot self-register**.
+- Operational users are created and managed by authorized administrators.
+- Role-based authorization determines which modules and operations are accessible to each user.
+
+This prevents unauthorized users from creating privileged accounts and keeps user administration under centralized control.
+
+---
+
+# 👑 Admin Module
+
+The Admin has centralized control over the CampSync system and manages the major operational modules.
+
+## 🏕️ Camp Management
+
+<p align="center">
+  <img src="Screenshots/Admin/Camp/CampList.JPG" width="420"/>
+  <img src="Screenshots/Admin/Camp/CreateCamp.JPG" width="420"/>
+  <img src="Screenshots/Admin/Camp/EditCamp.JPG" width="420"/>
+  <img src="Screenshots/Admin/Camp/CampById.JPG" width="420"/>
+</p>
+
+Admin can:
+
+- Create camps
+- View camp details
+- Update camp information
+- Manage camp-related data
+- View individual camp records
+
+---
+
+## 👥 User & Worker Management
+
+<p align="center">
+  <img src="Screenshots/Admin/User/CreateUser.JPG" width="420"/>
+  <img src="Screenshots/Admin/Worker/WorkerList.JPG" width="420"/>
+  <img src="Screenshots/Admin/Worker/CreateWorker.JPG" width="420"/>
+  <img src="Screenshots/Admin/Worker/EditWorker.JPG" width="420"/>
+</p>
+
+Admin manages the system workforce and controls the creation of operational users.
+
+---
+
+## 👨‍💼 Supervisor Management
+
+<p align="center">
+  <img src="Screenshots/Admin/Supervisor/SupervisorList.JPG" width="420"/>
+  <img src="Screenshots/Admin/Supervisor/CreateSupervisor.JPG" width="420"/>
+  <img src="Screenshots/Admin/Supervisor/SupervisorDetails.JPG" width="420"/>
+</p>
+
+Admin can:
+
+- Create supervisors
+- View supervisor information
+- Manage supervisor records
 - Assign supervisors to camps
 
-### Worker Management
-- Create and manage worker records
-- View worker details and lists
-- Update and delete worker information
-- Worker-specific attendance and leave management
+---
 
-### Supervisor Management
-- Create and manage supervisors
-- Assign supervisors to camps
-- Manage supervisor-related operations
-- Role-based supervisor access
+## 🛏️ Room Management
 
-### Attendance Management
-- Mark worker attendance
-- Camp-based attendance management
-- Individual attendance records
-- Attendance history
+<p align="center">
+  <img src="Screenshots/Admin/Room/RoomList.JPG" width="420"/>
+  <img src="Screenshots/Admin/Room/CreateRoom.JPG" width="420"/>
+  <img src="Screenshots/Admin/Room/EditRoom.JPG" width="420"/>
+  <img src="Screenshots/Admin/Room/RoomById.JPG" width="420"/>
+</p>
+
+Room management provides structured accommodation management for camps.
+
+---
+
+## 🛏️ Bed Management
+
+<p align="center">
+  <img src="Screenshots/Admin/Bed/BedList.JPG" width="420"/>
+  <img src="Screenshots/Admin/Bed/CreateBed.JPG" width="420"/>
+  <img src="Screenshots/Admin/Bed/EditBed.JPG" width="420"/>
+  <img src="Screenshots/Admin/Bed/AvailableBeds.JPG" width="420"/>
+</p>
+
+Admin can manage:
+
+- Beds
+- Bed availability
+- Room occupancy
+- Camp accommodation resources
+
+---
+
+## 🚌 Bus Management
+
+<p align="center">
+  <img src="Screenshots/Admin/Bus/BusList.JPG" width="420"/>
+  <img src="Screenshots/Admin/Bus/CreateBus.JPG" width="420"/>
+  <img src="Screenshots/Admin/Bus/EditBus.JPG" width="420"/>
+  <img src="Screenshots/Admin/Bus/BusById.JPG" width="420"/>
+</p>
+
+Transportation management includes:
+
+- Bus records
+- Bus capacity
+- Driver information
+- Bus assignments
+- Bus utilization
+
+---
+
+## 📍 Route & Stop Management
+
+<p align="center">
+  <img src="Screenshots/Admin/RouteStop/RouteStopList.JPG" width="420"/>
+  <img src="Screenshots/Admin/RouteStop/CreateRouteStop.JPG" width="420"/>
+  <img src="Screenshots/Admin/RouteStop/EditRouteStop.JPG" width="420"/>
+  <img src="Screenshots/Admin/RouteStop/ReorderRouteStop.JPG" width="420"/>
+</p>
+
+Admin can configure transportation routes and maintain the order of route stops.
+
+---
+
+## 📅 Attendance Management
+
+<p align="center">
+  <img src="Screenshots/Admin/Attendance/AttendanceList.JPG" width="420"/>
+  <img src="Screenshots/Admin/Attendance/MarkAttendance.JPG" width="420"/>
+  <img src="Screenshots/Admin/Attendance/MarkByCamp.JPG" width="420"/>
+  <img src="Screenshots/Admin/Attendance/AttendanceSummary.JPG" width="420"/>
+</p>
+
+Attendance functionality provides:
+
+- Attendance marking
+- Camp-based attendance
 - Attendance summaries
 - Attendance percentage calculations
-- Driver attendance tracking
+- Attendance history
 
-### Leave Management
-- Submit leave applications
-- View personal leave requests
-- Manage pending leave requests
-- Approve or reject leave applications
-- Track leave decisions
-- Leave summaries and trends
-- Worker-specific leave records
+---
 
-### Accommodation Management
-- Room management
-- Bed management
-- Room and bed availability tracking
-- Bed occupancy information
-- Camp-specific room organization
-- Unique room numbering per camp
+## 🏖️ Leave Management
 
-### Bus & Route Management
-- Create and manage buses
-- View bus information
-- Bus utilization tracking
-- Driver attendance management
-- Create and manage route stops
-- Bulk route-stop creation
-- Reorder route stops
-- Update and delete route stops
+<p align="center">
+  <img src="Screenshots/Admin/Leave/PendingLeaves.JPG" width="420"/>
+  <img src="Screenshots/Admin/Leave/LeaveSummary.JPG" width="420"/>
+  <img src="Screenshots/Admin/Leave/MyLeaves.JPG" width="420"/>
+</p>
 
-### Reporting & Dashboard
-- Centralized operational dashboard
-- Attendance summaries
-- Leave statistics
-- Leave trends
-- Bus utilization information
-- Bed occupancy information
-- Overall camp operational summaries
+Admin can monitor and manage leave-related information and approval workflows.
 
-## Architecture
+---
 
-CampSync follows a separated frontend/backend architecture:
+## 📊 Reports & Dashboard
+
+<p align="center">
+  <img src="Screenshots/Admin/Reports/Dashboard.JPG" width="600"/>
+</p>
+
+The reporting dashboard provides an overview of important operational information across the system.
+
+---
+
+# 👨‍💼 Supervisor Module
+
+Supervisors are responsible for managing day-to-day operations within their assigned camp.
+
+## 🏕️ Camp Operations
+
+<p align="center">
+  <img src="Screenshots/Supervisor/Camp/CampList.JPG" width="420"/>
+  <img src="Screenshots/Supervisor/Camp/CampDetails.JPG" width="420"/>
+</p>
+
+Supervisors can access information related to their assigned camp.
+
+---
+
+## 👷 Worker Management
+
+<p align="center">
+  <img src="Screenshots/Supervisor/Worker/WorkerList.JPG" width="420"/>
+  <img src="Screenshots/Supervisor/Worker/WorkerDetails.JPG" width="420"/>
+</p>
+
+Supervisors can manage and monitor workers associated with their operational scope.
+
+---
+
+## 📋 Attendance Management
+
+<p align="center">
+  <img src="Screenshots/Supervisor/Attendance/AttendanceList.JPG" width="420"/>
+  <img src="Screenshots/Supervisor/Attendance/MarkByCamp.JPG" width="420"/>
+  <img src="Screenshots/Supervisor/Attendance/AttendanceSummary.JPG" width="420"/>
+</p>
+
+Supervisors can:
+
+- Mark attendance
+- View attendance records
+- Manage camp-based attendance
+- View attendance summaries
+
+---
+
+## 🏖️ Leave Management
+
+<p align="center">
+  <img src="Screenshots/Supervisor/Leave/PendingLeaves.JPG" width="420"/>
+  <img src="Screenshots/Supervisor/Leave/LeaveSummary.JPG" width="420"/>
+</p>
+
+Supervisors can review and process leave requests according to their authorization level.
+
+---
+
+# 🚌 Driver Module
+
+The Driver module provides functionality related to transportation operations.
+
+## 🚌 Assigned Bus
+
+<p align="center">
+  <img src="Screenshots/Driver/Bus/MyBus.JPG" width="420"/>
+  <img src="Screenshots/Driver/Bus/BusDetails.JPG" width="420"/>
+</p>
+
+Drivers can access information about their assigned transportation resources.
+
+---
+
+## 📍 Routes & Stops
+
+<p align="center">
+  <img src="Screenshots/Driver/Route/RouteStops.JPG" width="420"/>
+  <img src="Screenshots/Driver/Route/RouteDetails.JPG" width="420"/>
+</p>
+
+Drivers can view the routes and stops relevant to their transportation operations.
+
+---
+
+## 📋 Driver Attendance
+
+<p align="center">
+  <img src="Screenshots/Driver/Attendance/Attendance.JPG" width="420"/>
+  <img src="Screenshots/Driver/Attendance/MyAttendance.JPG" width="420"/>
+</p>
+
+Driver-specific attendance records are handled separately from general workforce attendance.
+
+---
+
+# 👷 Worker Module
+
+Workers have access to their personal information and workforce-related services.
+
+## 👤 Profile
+
+<p align="center">
+  <img src="Screenshots/Worker/Profile/MyProfile.JPG" width="420"/>
+</p>
+
+Workers can view their profile and personal information.
+
+---
+
+## 📅 My Attendance
+
+<p align="center">
+  <img src="Screenshots/Worker/Attendance/MyAttendance.JPG" width="420"/>
+  <img src="Screenshots/Worker/Attendance/AttendanceSummary.JPG" width="420"/>
+</p>
+
+Workers can view their attendance records and attendance summaries.
+
+---
+
+## 🏖️ Leave Management
+
+<p align="center">
+  <img src="Screenshots/Worker/Leave/ApplyLeave.JPG" width="420"/>
+  <img src="Screenshots/Worker/Leave/MyLeaves.JPG" width="420"/>
+</p>
+
+Workers can:
+
+- Apply for leave
+- View submitted leave requests
+- Track leave status
+- Review their leave history
+
+---
+
+# ✨ Key Features
+
+- 🔐 JWT-based authentication
+- 🔒 BCrypt password hashing
+- 👑 Controlled Admin registration
+- 🚫 Restricted self-registration for operational roles
+- 🛡️ Role-based authorization
+- 👥 User and workforce management
+- 🏕️ Camp management
+- 👨‍💼 Supervisor management
+- 👷 Worker management
+- 🚌 Bus management
+- 📍 Route and route-stop management
+- 🛏️ Room management
+- 🛏️ Bed and occupancy management
+- 📅 Attendance management
+- 📊 Attendance summaries and percentage calculations
+- 🏖️ Leave application and approval workflow
+- 📈 Dashboard and operational reporting
+- 🗄️ Entity Framework Core Code-First architecture
+- 🔄 RESTful Web API architecture
+- 🔐 Sensitive configuration excluded from source control
+
+---
+
+# 🛠️ Tech Stack
+
+## Backend
+
+- ASP.NET Core Web API
+- .NET 8
+- Entity Framework Core
+- SQL Server
+- JWT Authentication
+- BCrypt.Net
+- RESTful API
+
+## Frontend
+
+- ASP.NET Core MVC
+- .NET 8
+- Razor Views
+- Bootstrap
+- HTML5
+- CSS3
+- JavaScript
+- jQuery
+
+## Development Tools
+
+- Visual Studio 2022
+- Git
+- GitHub
+- Entity Framework Core Migrations
+- SQL Server
+
+---
+
+# 🗄️ Database Schema
+
+CampSync uses **SQL Server** with **Entity Framework Core Code-First** architecture.
+
+The main entities include:
+
+| Entity | Description |
+|---|---|
+| User | Authentication, identity and role information |
+| Camp | Camp information and management |
+| Worker | Workforce records |
+| Supervisor | Supervisor information and camp assignment |
+| Attendance | Worker attendance records |
+| DriverAttendance | Driver-specific attendance records |
+| Leave | Leave requests and approval information |
+| Room | Camp room information |
+| Bed | Bed and occupancy information |
+| Bus | Transportation and bus information |
+| RouteStop | Transportation route stops and ordering |
+
+Entity relationships and database changes are maintained through **Entity Framework Core migrations**.
+
+---
+
+# 🔄 CampSync Lifecycle
 
 ```text
-                    CampSync
-                       |
-          +------------+------------+
-          |                         |
-      Frontend                   Backend
-   ASP.NET Core MVC          ASP.NET Core Web API
-          |                         |
-    Razor Views              Controllers / DTOs
-          |                         |
-          +-----------+-------------+
-                      |
-              Entity Framework Core
-                      |
-                  SQL Server
+Admin Registration
+        │
+        ▼
+   Admin Login
+        │
+        ▼
+   User Management
+        │
+        ├───────────────┐
+        ▼               ▼
+   Camp Creation   Supervisor Assignment
+        │               │
+        └───────┬───────┘
+                ▼
+        Worker Management
+                │
+        ┌───────┼────────┐
+        ▼       ▼        ▼
+      Rooms    Beds     Buses
+        │       │        │
+        └───────┼────────┘
+                ▼
+        Daily Operations
+                │
+        ┌───────┼──────────┐
+        ▼       ▼          ▼
+   Attendance  Leave   Transportation
+        │       │          │
+        └───────┼──────────┘
+                ▼
+        Reports & Dashboard
