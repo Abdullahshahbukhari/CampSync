@@ -12,7 +12,7 @@ CampSync provides a centralized platform for managing **camps, workers, supervis
 
 <p align="center">
   <img src="Screenshorts/Registration.JPG" width="420"/>
-  <img src="Screenshots/Authentication/Login.JPG" width="420"/>
+  <img src="Screenshorts/Login.JPG" width="420"/>
 </p>
 
 ### 🔒 Controlled Registration
@@ -36,10 +36,11 @@ The Admin has centralized control over the CampSync system and manages the major
 ## 🏕️ Camp Management
 
 <p align="center">
-  <img src="Screenshots/Admin/Camp/CampList.JPG" width="420"/>
-  <img src="Screenshots/Admin/Camp/CreateCamp.JPG" width="420"/>
-  <img src="Screenshots/Admin/Camp/EditCamp.JPG" width="420"/>
-  <img src="Screenshots/Admin/Camp/CampById.JPG" width="420"/>
+  <img src="Screenshorts/camps dashboard_a.JPG" width="420"/>
+   <img src="Screenshorts/edit camp_A.JPG" width="420"/>
+    <img src="Screenshorts/create camps_a.JPG" width="420"/>
+     <img src="Screenshorts/Delete camp_a.JPG" width="420"/>
+    
 </p>
 
 Admin can:
@@ -55,10 +56,10 @@ Admin can:
 ## 👥 User & Worker Management
 
 <p align="center">
-  <img src="Screenshots/Admin/User/CreateUser.JPG" width="420"/>
-  <img src="Screenshots/Admin/Worker/WorkerList.JPG" width="420"/>
-  <img src="Screenshots/Admin/Worker/CreateWorker.JPG" width="420"/>
-  <img src="Screenshots/Admin/Worker/EditWorker.JPG" width="420"/>
+  <img src="Screenshorts/Supervisor_User_A.JPG" width="420"/>
+  <img src="Screenshorts/Worker Dashboard_a.JPG" width="420"/>
+  <img src="Screenshorts/Create Worker_a.JPG" width="420"/>
+  <img src="Screenshorts/Delet worker_a.JPG" width="420"/>
 </p>
 
 Admin manages the system workforce and controls the creation of operational users.
