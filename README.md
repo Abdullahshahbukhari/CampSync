@@ -20,6 +20,7 @@ CampSync centralizes the operations of a labor/worker camp environment — accom
 - [Database Schema](#database-schema)
 - [Role-Based Access](#role-based-access)
 - [Getting Started](#getting-started)
+- [API Documentation](#api-documentation)
 - [Screenshots](#screenshots)
   - [Authentication](#authentication)
   - [Admin Module](#admin-module)
@@ -27,6 +28,7 @@ CampSync centralizes the operations of a labor/worker camp environment — accom
   - [Driver Module](#driver-module)
   - [Worker Module](#worker-module)
 - [Project Structure](#project-structure)
+- [Connect](#connect)
 
 ---
 
@@ -112,16 +114,16 @@ Schema changes are tracked through versioned EF Core migrations.
 - Visual Studio 2022 or the `dotnet` CLI
 
 ### 1. Clone the repository
-```bash
+```````bash
 git clone https://github.com/<your-username>/CampSync.git
 cd CampSync
-```
+```````
 
 ### 2. Configure the Backend
 
 Set your connection string and JWT secret in `Backend/appsettings.json`:
 
-```json
+```````json
 {
   "ConnectionStrings": {
     "CampSync": "Server=<your-server>;Database=CampSync;Trusted_Connection=True;TrustServerCertificate=True;"
@@ -133,22 +135,41 @@ Set your connection string and JWT secret in `Backend/appsettings.json`:
     "ExpiryInDays": 7
   }
 }
-```
+```````
 
 ### 3. Apply migrations
-```bash
+```````bash
 cd Backend
 dotnet ef database update
-```
+```````
 
 ### 4. Run both projects
-```bash
+```````bash
 dotnet run --project Backend    # Swagger UI at /swagger
 dotnet run --project Frontend
-```
+```````
 
 ### 5. First login
 Register the sole Admin account through the Backend's registration endpoint, then sign in through the Frontend. Every other account is created from the Admin module.
+
+---
+
+## API Documentation
+
+The Backend exposes a fully documented REST API via Swagger/OpenAPI, generated directly from the controllers and DTOs. Every endpoint can be explored and tested — including authenticated, role-protected routes — straight from the browser.
+
+<table>
+<tr>
+<td width="33%" align="center"><img src="Screenshorts/Swager1.JPG" width="100%"/></td>
+<td width="33%" align="center"><img src="Screenshorts/Swager2.JPG" width="100%"/></td>
+<td width="33%" align="center"><img src="Screenshorts/Swager3.JPG" width="100%"/></td>
+</tr>
+<tr>
+<td width="33%" align="center"><img src="Screenshorts/Swager4.JPG" width="100%"/></td>
+<td width="33%" align="center"><img src="Screenshorts/Swager5.JPG" width="100%"/></td>
+<td width="33%" align="center"><img src="Screenshorts/Swager6.JPG" width="100%"/></td>
+</tr>
+</table>
 
 ---
 
@@ -227,7 +248,11 @@ Register the sole Admin account through the Backend's registration endpoint, the
 <td></td>
 </tr>
 </table>
+````````
 
+## Part 2 (Part 1 ke turant baad ye paste karein)
+
+```````
 **Bus Management**
 
 <table>
@@ -355,7 +380,7 @@ Drivers also use the same self-service leave workflow available to workers.
 
 ## Project Structure
 
-```
+`````
 CampSync/
 ├── Backend/                 ASP.NET Core Web API
 │   ├── Controllers/         Auth, Camp, Worker, Supervisor, Room, Bed,
@@ -371,4 +396,16 @@ CampSync/
     ├── Views/                 Razor views per module
     ├── DTOs/                  View-facing data transfer objects
     └── Program.cs
-```
+`````
+
+---
+
+## Connect
+
+**Syed Abdullah Shah**
+[LinkedIn](https://www.linkedin.com/in/syed-abdullah-shah-52aa7721b/)
+
+Feel free to reach out for feedback, collaboration, or opportunities.
+````` `
+
+Agar iske bawajood copy-paste mein masla aaye to jo file maine upar bheji hai wahi sabse reliable tareeqa hai — usme ye exact wahi content bilkul theek se save hai.
