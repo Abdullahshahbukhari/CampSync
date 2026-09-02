@@ -282,7 +282,7 @@ Workers have access to their personal information and workforce-related services
 ## 👤 Profile
 
 <p align="center">
-  <img src="Screenshots/Worker/Profile/MyProfile.JPG" width="420"/>
+  <img src="Screenshorts/my profile_.JPG" width="420"/>
 </p>
 
 Workers can view their profile and personal information.
@@ -292,8 +292,8 @@ Workers can view their profile and personal information.
 ## 📅 My Attendance
 
 <p align="center">
-  <img src="Screenshots/Worker/Attendance/MyAttendance.JPG" width="420"/>
-  <img src="Screenshots/Worker/Attendance/AttendanceSummary.JPG" width="420"/>
+   <img src="Screenshorts/My Attadance_w.JPG" width="420"/>
+    <img src="Screenshorts/My Bus_w" width="420"/>
 </p>
 
 Workers can view their attendance records and attendance summaries.
@@ -303,8 +303,10 @@ Workers can view their attendance records and attendance summaries.
 ## 🏖️ Leave Management
 
 <p align="center">
-  <img src="Screenshots/Worker/Leave/ApplyLeave.JPG" width="420"/>
-  <img src="Screenshots/Worker/Leave/MyLeaves.JPG" width="420"/>
+   <img src="Screenshorts/My Leave dashboard_w.JPG" width="420"/>
+    <img src="Screenshorts/My Leave Summery_w.JPG" width="420"/>
+  <img src="Screenshorts/Dashboard_w.JPG" width="420"/>
+    <img src="Screenshorts/Apply leave_w.JPG" width="420"/>
 </p>
 
 Workers can:
