@@ -11,7 +11,7 @@ CampSync provides a centralized platform for managing **camps, workers, supervis
 ## 🔐 Authentication & Access Control
 
 <p align="center">
-  <img src="Screenshots/Authentication/Register.JPG" width="420"/>
+  <img src="Screenshorts/Registration.JPG" width="420"/>
   <img src="Screenshots/Authentication/Login.JPG" width="420"/>
 </p>
 
