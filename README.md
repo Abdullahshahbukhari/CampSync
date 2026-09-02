@@ -248,7 +248,7 @@ The Backend exposes a fully documented REST API via Swagger/OpenAPI, generated d
 <td></td>
 </tr>
 </table>
-````````
+
 **Bus Management**
 
 <table>
@@ -402,6 +402,4 @@ CampSync/
 [LinkedIn](https://www.linkedin.com/in/syed-abdullah-shah-52aa7721b/)
 
 Feel free to reach out for feedback, collaboration, or opportunities.
-````` `
 
-Agar iske bawajood copy-paste mein masla aaye to jo file maine upar bheji hai wahi sabse reliable tareeqa hai — usme ye exact wahi content bilkul theek se save hai.
