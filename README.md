@@ -194,8 +194,8 @@ Supervisors are responsible for managing day-to-day operations within their assi
 ## 🏕️ Camp Operations
 
 <p align="center">
-  <img src="Screenshots/Supervisor/Camp/CampList.JPG" width="420"/>
-  <img src="Screenshots/Supervisor/Camp/CampDetails.JPG" width="420"/>
+<img src="Screenshorts/camp dashboard_s.JPG" width="420"/>
+  <img src="Screenshorts/camp detail_s.JPG" width="420"/>
 </p>
 
 Supervisors can access information related to their assigned camp.
@@ -205,8 +205,8 @@ Supervisors can access information related to their assigned camp.
 ## 👷 Worker Management
 
 <p align="center">
-  <img src="Screenshots/Supervisor/Worker/WorkerList.JPG" width="420"/>
-  <img src="Screenshots/Supervisor/Worker/WorkerDetails.JPG" width="420"/>
+ <img src="Screenshorts/worker dashboard_s.JPG" width="420"/>
+  <img src="Screenshorts/worker detail_s.JPG" width="420"/>
 </p>
 
 Supervisors can manage and monitor workers associated with their operational scope.
@@ -216,9 +216,8 @@ Supervisors can manage and monitor workers associated with their operational sco
 ## 📋 Attendance Management
 
 <p align="center">
-  <img src="Screenshots/Supervisor/Attendance/AttendanceList.JPG" width="420"/>
-  <img src="Screenshots/Supervisor/Attendance/MarkByCamp.JPG" width="420"/>
-  <img src="Screenshots/Supervisor/Attendance/AttendanceSummary.JPG" width="420"/>
+  <img src="Screenshorts/Attadance dashboard_s.JPG" width="420"/>
+  <img src="Screenshorts/Mark Attadance_s.JPG" width="420"/>
 </p>
 
 Supervisors can:
@@ -233,8 +232,8 @@ Supervisors can:
 ## 🏖️ Leave Management
 
 <p align="center">
-  <img src="Screenshots/Supervisor/Leave/PendingLeaves.JPG" width="420"/>
-  <img src="Screenshots/Supervisor/Leave/LeaveSummary.JPG" width="420"/>
+  <img src="Screenshorts/my leave ummery_s.JPG" width="420"/>
+ 
 </p>
 
 Supervisors can review and process leave requests according to their authorization level.
@@ -248,8 +247,8 @@ The Driver module provides functionality related to transportation operations.
 ## 🚌 Assigned Bus
 
 <p align="center">
-  <img src="Screenshots/Driver/Bus/MyBus.JPG" width="420"/>
-  <img src="Screenshots/Driver/Bus/BusDetails.JPG" width="420"/>
+  <img src="Screenshorts/dashboard_d.JPG" width="420"/>
+   <img src="Screenshorts/My Bus_d.JPG" width="420"/>
 </p>
 
 Drivers can access information about their assigned transportation resources.
@@ -259,8 +258,7 @@ Drivers can access information about their assigned transportation resources.
 ## 📍 Routes & Stops
 
 <p align="center">
-  <img src="Screenshots/Driver/Route/RouteStops.JPG" width="420"/>
-  <img src="Screenshots/Driver/Route/RouteDetails.JPG" width="420"/>
+  <img src="Screenshorts/My Bus_d.JPG" width="420"/>
 </p>
 
 Drivers can view the routes and stops relevant to their transportation operations.
@@ -270,8 +268,7 @@ Drivers can view the routes and stops relevant to their transportation operation
 ## 📋 Driver Attendance
 
 <p align="center">
-  <img src="Screenshots/Driver/Attendance/Attendance.JPG" width="420"/>
-  <img src="Screenshots/Driver/Attendance/MyAttendance.JPG" width="420"/>
+   <img src="Screenshorts/MyAttandance_d.JPG" width="420"/>
 </p>
 
 Driver-specific attendance records are handled separately from general workforce attendance.
