@@ -165,9 +165,10 @@ Attendance functionality provides:
 ## 🏖️ Leave Management
 
 <p align="center">
-  <img src="Screenshots/Admin/Leave/PendingLeaves.JPG" width="420"/>
-  <img src="Screenshots/Admin/Leave/LeaveSummary.JPG" width="420"/>
-  <img src="Screenshots/Admin/Leave/MyLeaves.JPG" width="420"/>
+   <img src="Screenshorts/Leave Dashboard_a.JPG" width="420"/>
+  <img src="Screenshorts/Leave Summery_a.JPG" width="420"/>
+  <img src="Screenshorts/Pending Leave_a.JPG" width="420"/>
+
 </p>
 
 Admin can monitor and manage leave-related information and approval workflows.
@@ -177,7 +178,9 @@ Admin can monitor and manage leave-related information and approval workflows.
 ## 📊 Reports & Dashboard
 
 <p align="center">
-  <img src="Screenshots/Admin/Reports/Dashboard.JPG" width="600"/>
+<img src="Screenshorts/report dashboard 1_a.JPG" width="420"/>
+  <img src="Screenshorts/report dashboard 2_a.JPG" width="420"/>
+<img src="Screenshorts/report dashboard 3_a.JPG" width="420"/>
 </p>
 
 The reporting dashboard provides an overview of important operational information across the system.
