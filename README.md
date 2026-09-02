@@ -249,10 +249,6 @@ The Backend exposes a fully documented REST API via Swagger/OpenAPI, generated d
 </tr>
 </table>
 ````````
-
-## Part 2 (Part 1 ke turant baad ye paste karein)
-
-```````
 **Bus Management**
 
 <table>
