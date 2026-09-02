@@ -69,9 +69,8 @@ Admin manages the system workforce and controls the creation of operational user
 ## 👨‍💼 Supervisor Management
 
 <p align="center">
-  <img src="Screenshots/Admin/Supervisor/SupervisorList.JPG" width="420"/>
-  <img src="Screenshots/Admin/Supervisor/CreateSupervisor.JPG" width="420"/>
-  <img src="Screenshots/Admin/Supervisor/SupervisorDetails.JPG" width="420"/>
+   <img src="Screenshorts/Supervisor_User_A.JPG" width="420"/>
+ <img src="Screenshorts/create camps_a.JPG" width="420"/>
 </p>
 
 Admin can:
@@ -86,10 +85,10 @@ Admin can:
 ## 🛏️ Room Management
 
 <p align="center">
-  <img src="Screenshots/Admin/Room/RoomList.JPG" width="420"/>
-  <img src="Screenshots/Admin/Room/CreateRoom.JPG" width="420"/>
-  <img src="Screenshots/Admin/Room/EditRoom.JPG" width="420"/>
-  <img src="Screenshots/Admin/Room/RoomById.JPG" width="420"/>
+  <img src="Screenshorts/Room dashboard_a.JPG" width="420"/>
+  <img src="Screenshorts/Create Room_a.JPG" width="420"/>
+  <img src="Screenshorts/Edit Room_a.JPG" width="420"/>
+  <img src="Screenshorts/Room Delete_a.JPG" width="420"/>
 </p>
 
 Room management provides structured accommodation management for camps.
@@ -99,10 +98,9 @@ Room management provides structured accommodation management for camps.
 ## 🛏️ Bed Management
 
 <p align="center">
-  <img src="Screenshots/Admin/Bed/BedList.JPG" width="420"/>
-  <img src="Screenshots/Admin/Bed/CreateBed.JPG" width="420"/>
-  <img src="Screenshots/Admin/Bed/EditBed.JPG" width="420"/>
-  <img src="Screenshots/Admin/Bed/AvailableBeds.JPG" width="420"/>
+   <img src="Screenshorts/Bed Dashboard_a.JPG" width="420"/>
+  <img src="Screenshorts/Create Bed_a.JPG" width="420"/>
+  <img src="Screenshorts/Edit Bed_a.JPG" width="420"/>
 </p>
 
 Admin can manage:
@@ -117,10 +115,10 @@ Admin can manage:
 ## 🚌 Bus Management
 
 <p align="center">
-  <img src="Screenshots/Admin/Bus/BusList.JPG" width="420"/>
-  <img src="Screenshots/Admin/Bus/CreateBus.JPG" width="420"/>
-  <img src="Screenshots/Admin/Bus/EditBus.JPG" width="420"/>
-  <img src="Screenshots/Admin/Bus/BusById.JPG" width="420"/>
+  <img src="Screenshorts/Bus Detail_a.JPG" width="420"/>
+  <img src="Screenshorts/Create Bus_a.JPG" width="420"/>
+  <img src="Screenshorts/Delete Bus_a.JPG" width="420"/>
+  <img src="Screenshorts/Update Bus_a.JPG" width="420"/>
 </p>
 
 Transportation management includes:
@@ -136,10 +134,9 @@ Transportation management includes:
 ## 📍 Route & Stop Management
 
 <p align="center">
-  <img src="Screenshots/Admin/RouteStop/RouteStopList.JPG" width="420"/>
-  <img src="Screenshots/Admin/RouteStop/CreateRouteStop.JPG" width="420"/>
-  <img src="Screenshots/Admin/RouteStop/EditRouteStop.JPG" width="420"/>
-  <img src="Screenshots/Admin/RouteStop/ReorderRouteStop.JPG" width="420"/>
+  <img src="Screenshorts/Routestop Dashboard_a.JPG" width="420"/>
+  <img src="Screenshorts/Edit Route Stop_a.JPG" width="420"/>
+  <img src="Screenshorts/Delete routestop_a.JPG" width="420"/>
 </p>
 
 Admin can configure transportation routes and maintain the order of route stops.
@@ -149,10 +146,10 @@ Admin can configure transportation routes and maintain the order of route stops.
 ## 📅 Attendance Management
 
 <p align="center">
-  <img src="Screenshots/Admin/Attendance/AttendanceList.JPG" width="420"/>
-  <img src="Screenshots/Admin/Attendance/MarkAttendance.JPG" width="420"/>
-  <img src="Screenshots/Admin/Attendance/MarkByCamp.JPG" width="420"/>
-  <img src="Screenshots/Admin/Attendance/AttendanceSummary.JPG" width="420"/>
+  <img src="Screenshorts/Attandance Dashboard_a.JPG" width="420"/>
+  <img src="Screenshorts/Attandance Mark_a.JPG" width="420"/>
+  <img src="Screenshorts/Attadance summery _a.JPG" width="420"/>
+  <img src="Screenshorts/Attadance edit_a.JPG" width="420"/>
 </p>
 
 Attendance functionality provides:
